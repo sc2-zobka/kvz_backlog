@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="form_view_order_form_inherit_sale_project_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_project.view_order_form_inherit_sale_project"/>
+        <field name="arch" type="xml">
+            <field name="project_id" position="before">
+                <field name="project_line_ids" widget="many2many_tags" />
+                <field name="project_ids" widget="many2many_tags" invisible="1" string="XXXXXXXXXXXXX"/>
+            </field>
+        </field>
+    </record>
+</odoo>

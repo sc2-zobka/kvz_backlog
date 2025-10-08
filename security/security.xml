@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record model="ir.module.category" id="backlog_module_access_rights">
+			<field name="name">BackLog : Access Rights </field>
+			<field name="sequence">11</field>
+		</record>
+		
+		<record id="group_business_owner" model="res.groups">
+			<field name="name">Business Owner</field>
+			<field name="category_id" ref="backlog_module_access_rights"/>
+		</record>
+		
+		<record id="group_head_of_sales" model="res.groups">
+			<field name="name">Head of Sale</field>
+			<field name="category_id" ref="backlog_module_access_rights"/>
+		</record>
+
+		<record id="group_backlog_users" model="res.groups">
+			<field name="name">User</field>
+			<field name="category_id" ref="backlog_module_access_rights"/>
+		</record>
+		
+		<record id="group_backlog_manager" model="res.groups">
+			<field name="name">Manager</field>
+			<field name="category_id" ref="backlog_module_access_rights"/>
+		</record>
+
+		<record id="group_project_manager" model="res.groups">
+			<field name="name">Project Manager</field>
+			<field name="category_id" ref="backlog_module_access_rights"/>
+		</record>
+	</data>
+</odoo>

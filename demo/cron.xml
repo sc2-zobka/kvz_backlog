@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="ir_cron_resevation_limit_date_exceed" model="ir.cron">
+            <field name="name">Reservation Limit Date Exceed</field>
+            <field name="model_id" ref="sale.model_sale_order_line"/>
+            <field name="state">code</field>
+            <field name="code">model._schedule_reservation_move()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+        </record>
+       
+     </data>
+</odoo>

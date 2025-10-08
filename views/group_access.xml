@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="form_sale_order_line_view_inherit_access" model="ir.ui.view">
+		<field name="name">sale.order.line.form.inherit</field>
+		<field name="model">sale.order.line</field>
+		<field name="inherit_id" ref="kvz_backlog.form_sale_order_line_view" />
+		<field name="arch" type="xml">
+            <form position="attributes">
+                <attribute name="create">0</attribute>
+            </form>
+		</field>
+	</record>
+
+    <record id="kanban_sale_order_line_view_inherit_access" model="ir.ui.view">
+		<field name="name">sale.order.line.form.inherit</field>
+		<field name="model">sale.order.line</field>
+		<field name="inherit_id" ref="kvz_backlog.kanban_sale_order_line_view" />
+		<field name="arch" type="xml">
+            <kanban position="attributes">
+                <attribute name="create">0</attribute>
+            </kanban>
+		</field>
+	</record>
+
+     <record id="kvz_backlog_list_inherit_access" model="ir.ui.view">
+		<field name="name">sale.order.line.form.inherit</field>
+		<field name="model">sale.order.line</field>
+		<field name="inherit_id" ref="kvz_backlog.kvz_backlog_list" />
+		<field name="arch" type="xml">
+            <tree position="attributes">
+                <attribute name="create">0</attribute>
+            </tree>
+		</field>
+	</record>
+
+	 <record id="mail_mail_activity_type_view_form_extend" model="ir.ui.view">
+		<field name="name">mail.activity.type.form.inherit</field>
+		<field name="model">mail.activity.type</field>
+		<field name="inherit_id" ref="mail.mail_activity_type_view_form" />
+		<field name="arch" type="xml">
+			<field name="category" position="after">
+					<field name="is_todo"/>
+			</field>
+		</field>
+	</record>
+</odoo>

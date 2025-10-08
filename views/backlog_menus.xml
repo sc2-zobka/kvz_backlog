@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="backlog_menu"
+        name="Backlog"
+        sequence="40" 
+		web_icon="kvz_backlog,static/description/icon.png" 
+		groups="kvz_backlog.group_backlog_users,kvz_backlog.group_backlog_manager"
+	/>
+
+    <!-- Backlog -->
+    <menuitem id="kvz_backlog_manager"
+        action="kvz_backlog.action_window"
+        sequence="1"
+        name="Líneas de Pedido"
+        parent="kvz_backlog.backlog_menu"
+    />
+
+    <!-- Reports -->
+    <menuitem id="submenu_backlog_reports"
+        name="Informes"
+        sequence="1"
+        parent="kvz_backlog.backlog_menu"
+    />
+
+    <menuitem id="submenu_backlog_line_report" 
+        name="Flujo de Facturación"
+        action="kvz_backlog_report"
+        sequence="2"
+        parent="kvz_backlog.submenu_backlog_reports"
+    />
+
+    <!-- Settings -->
+    <menuitem id="submenu_backlog_config"
+        name="Configuración"
+        sequence="1"
+        parent="kvz_backlog.backlog_menu"
+    />
+
+    <menuitem id="submenu_backlog_stages"
+        name="Etapas" 
+        action="action_backlog_stages"
+        sequence="3"
+        parent="kvz_backlog.submenu_backlog_config"
+    />
+</odoo>

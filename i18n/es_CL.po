@@ -1,0 +1,738 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* kvz_backlog
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-17 16:02+0000\n"
+"PO-Revision-Date: 2024-01-17 16:02+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: kvz_backlog
+#: model:ir.model.fields.selection,name:kvz_backlog.selection__backlog_stages__stages_type__planning
+msgid " Planning"
+msgstr "Planificación"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.forecast_status_update_wiz_view
+msgid ""
+"<span class=\"o_form_label\">IF record is old and not set any status. only "
+"this type of record work.</span>"
+msgstr ""
+"<span class=\"o_form_label\">Si el registro es antiguo y no se establece ningún estado."
+" solo este tipo de registro funciona.</span>"
+
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_needaction
+msgid "Action Needed"
+msgstr "Acción Requerida"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__activity_ids
+msgid "Activities"
+msgstr "Actividades"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Decoración de excepción de actividad"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__activity_state
+msgid "Activity State"
+msgstr "Estado de la actividad"
+
+#. module: kvz_backlog
+#: model:ir.model,name:kvz_backlog.model_mail_activity_type
+msgid "Activity Type"
+msgstr "Tipo de actividad"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icono del tipo de actividad"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_attachment_count
+msgid "Attachment Count"
+msgstr "Cantidad de adjuntos"
+
+#. module: kvz_backlog
+#: model:ir.model,name:kvz_backlog.model_backlog_stages
+msgid "Back Log Stages"
+msgstr "Etapas del Backlog"
+
+#. module: kvz_backlog
+#: model:ir.module.category,name:kvz_backlog.backlog_module_access_rights
+msgid "BackLog : Access Rights "
+msgstr "Backlog: Permisos de acceso"
+
+#. module: kvz_backlog
+#: model:ir.ui.menu,name:kvz_backlog.backlog_menu
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.kanban_sale_order_line_view
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.view_sale_order_line_graph
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.view_sale_order_line_graph_bar_type
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.view_sale_order_line_search_graph
+msgid "Backlog"
+msgstr "Backlog"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.view_sale_order_line_report_graph
+msgid "Backlog Graph"
+msgstr "Gráfico de Backlog"
+
+#. module: kvz_backlog
+#: model:ir.actions.act_window,name:kvz_backlog.action_backlog_stages
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.tree_backlog_stages_view
+msgid "Backlog Stages"
+msgstr "Etapas del Backlog"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__business_line
+msgid "Business Line"
+msgstr "Línea de negocio"
+
+#. module: kvz_backlog
+#: model:res.groups,name:kvz_backlog.group_business_owner
+msgid "Business Owner"
+msgstr "Propietario del negocio"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__campaign_id
+msgid "Campaign"
+msgstr "Campaña"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.forecast_status_update_wiz_view
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_forecast_wizard
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_replan_wizard
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: kvz_backlog
+#: model:ir.ui.menu,name:kvz_backlog.submenu_backlog_config
+msgid "Configuración"
+msgstr "Configuración"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_forecast_wizard
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_replan_wizard
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__country_id
+msgid "Country"
+msgstr "País"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_manage__create_uid
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_stages__create_uid
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_status_update__create_uid
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_wizard__create_uid
+#: model:ir.model.fields,field_description:kvz_backlog.field_replan_wizard__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_manage__create_date
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_stages__create_date
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_status_update__create_date
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_wizard__create_date
+#: model:ir.model.fields,field_description:kvz_backlog.field_replan_wizard__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__cpl_currency_id
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__current_user_id
+msgid "Current Users"
+msgstr "Usuarios actuales"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.kanban_sale_order_line_view
+msgid "Customer :"
+msgstr "Cliente:"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__date_deadline
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.view_sale_order_line_search_graph
+msgid "Deadline Date"
+msgstr "Fecha límite"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_manage__display_name
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_stages__display_name
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_status_update__display_name
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_wizard__display_name
+#: model:ir.model.fields,field_description:kvz_backlog.field_replan_wizard__display_name
+msgid "Display Name"
+msgstr "Nombre"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_wizard__date
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__forecast_date
+msgid "Due Date"
+msgstr "Fecha de vencimiento"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.view_sale_order_line_graph
+msgid "Estado Backlog"
+msgstr "Estado del Backlog"
+
+#. module: kvz_backlog
+#: model:ir.ui.menu,name:kvz_backlog.submenu_backlog_stages
+msgid "Etapas"
+msgstr "Etapas"
+
+#. module: kvz_backlog
+#: model:ir.ui.menu,name:kvz_backlog.submenu_backlog_line_report
+msgid "Flujo de Facturación"
+msgstr "Flujo de Facturación"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_follower_ids
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Seguidores (Socios)"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icono de Font Awesome, por ejemplo, fa-tasks"
+
+#. module: kvz_backlog
+#: model:ir.actions.act_window,name:kvz_backlog.action_validate_forcast_status
+msgid "Forcast Status"
+msgstr "Estado de pronóstico"
+
+#. module: kvz_backlog
+#: model:backlog.stages,name:kvz_backlog.block_stage_001
+#: model:ir.actions.act_window,name:kvz_backlog.action_forecast_wizard
+#: model:ir.model.fields.selection,name:kvz_backlog.selection__backlog_stages__stages_type__forecast
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_forecast_wizard
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_sale_order_line_view
+msgid "Forecast"
+msgstr "Pronóstico"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.kanban_sale_order_line_view
+msgid "Forecast Date :"
+msgstr "Fecha de pronóstico:"
+
+#. module: kvz_backlog
+#: model:ir.model,name:kvz_backlog.model_forecast_status_update
+msgid "Forecast Status Update"
+msgstr "Actualización del estado del pronóstico"
+
+#. module: kvz_backlog
+#: model:ir.model,name:kvz_backlog.model_forecast_wizard
+msgid "Forecast Wizard"
+msgstr "Asistente de pronóstico"
+
+#. module: kvz_backlog
+#: model:ir.actions.act_window,name:kvz_backlog.action_window
+#: model:ir.actions.act_window,name:kvz_backlog.kvz_backlog_report
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_sale_order_line_view
+msgid "Gestion Backlog Kuvasz"
+msgstr "Gestión del Backlog - Kuvasz"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__has_message
+msgid "Has Message"
+msgstr "Tiene mensaje"
+
+#. module: kvz_backlog
+#: model:res.groups,name:kvz_backlog.group_head_of_sales
+msgid "Head of Sale"
+msgstr "Jefe de ventas"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.view_sale_order_line_search_graph
+msgid "Hide undefined backlog state or deadline date records"
+msgstr "Ocultar registros de estado de backlog o fecha límite indefinidos"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_manage__id
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_stages__id
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_status_update__id
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_wizard__id
+#: model:ir.model.fields,field_description:kvz_backlog.field_replan_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__activity_exception_icon
+msgid "Icon"
+msgstr "Icono"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Ícono para indicar una actividad de excepción."
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__message_needaction
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__message_unread
+msgid "If checked, new messages require your attention."
+msgstr "Si está marcado, los mensajes nuevos requieren su atención."
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__message_has_error
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
+
+#. module: kvz_backlog
+#: model:ir.ui.menu,name:kvz_backlog.submenu_backlog_reports
+msgid "Informes"
+msgstr "Informes"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_sale_order_line_view
+msgid "Invoice"
+msgstr "Factura"
+
+#. module: kvz_backlog
+#: model:backlog.stages,name:kvz_backlog.block_stage_006
+#: model:ir.model.fields.selection,name:kvz_backlog.selection__backlog_stages__stages_type__invoiced
+msgid "Invoiced"
+msgstr "Facturado"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_is_follower
+msgid "Is Follower"
+msgstr "Es seguidor"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__is_hide_forecast
+msgid "Is Hide Forecast"
+msgstr "Ocultar pronóstico"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__is_required_date
+msgid "Is Required Date"
+msgstr "Fecha requerida"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_mail_activity_type__is_todo
+msgid "Is To Do"
+msgstr "Por hacer"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_manage____last_update
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_stages____last_update
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_status_update____last_update
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_wizard____last_update
+#: model:ir.model.fields,field_description:kvz_backlog.field_replan_wizard____last_update
+msgid "Last Modified on"
+msgstr "Última modificación"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_manage__write_uid
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_stages__write_uid
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_status_update__write_uid
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_wizard__write_uid
+#: model:ir.model.fields,field_description:kvz_backlog.field_replan_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_manage__write_date
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_stages__write_date
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_status_update__write_date
+#: model:ir.model.fields,field_description:kvz_backlog.field_forecast_wizard__write_date
+#: model:ir.model.fields,field_description:kvz_backlog.field_replan_wizard__write_date
+msgid "Last Updated on"
+msgstr "Última actualización"
+
+#. module: kvz_backlog
+#: model:ir.ui.menu,name:kvz_backlog.kvz_backlog_manager
+msgid "Líneas de Pedido"
+msgstr "Líneas de Pedido"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Adjunto principal"
+
+#. module: kvz_backlog
+#: model:res.groups,name:kvz_backlog.group_backlog_manager
+msgid "Manager"
+msgstr "Manager"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__medium_id
+msgid "Medium"
+msgstr ""
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_has_error
+msgid "Message Delivery error"
+msgstr "Error de entrega del mensaje"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_ids
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.forecast_status_update_wiz_view
+msgid "Move To Forcats Status"
+msgstr "Mover al estado de pronóstico"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Fecha límite de mi actividad"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_stages__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Siguiente evento del calendario de actividades"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Fecha límite de la siguiente actividad"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__activity_summary
+msgid "Next Activity Summary"
+msgstr "Resumen de la siguiente actividad"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__activity_type_id
+msgid "Next Activity Type"
+msgstr "Tipo de la siguiente actividad"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Número de acciones"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order__project_count
+msgid "Number of Projects"
+msgstr "Número de proyectos"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_has_error_counter
+msgid "Number of errors"
+msgstr "Número de errores"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr "Número de mensajes que requieren una acción"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Número de mensajes con error de entrega"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Número de mensajes no leídos"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.kanban_sale_order_line_view
+msgid "Order :"
+msgstr "Pedido:"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__state
+msgid "Order Status"
+msgstr "Estado del pedido"
+
+#. module: kvz_backlog
+#: model:backlog.stages,name:kvz_backlog.block_stage_002
+msgid "Planning"
+msgstr "Planificación"
+
+#. module: kvz_backlog
+#: code:addons/kvz_backlog/models/backlog.py:0
+#, python-format
+msgid "Please set date deadline first!"
+msgstr "¡Por favor, establezca la fecha límite primero."
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__clp_price_total
+msgid "Price Subtotal CLP"
+msgstr "Subtotal CLP"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_sale_order_line_view
+msgid "Product"
+msgstr "Producto"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_sale_order_line_view
+msgid "Product Attributes"
+msgstr "Atributos del producto"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__project_id
+msgid "Project"
+msgstr "Proyecto"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__project_manager
+#: model:res.groups,name:kvz_backlog.group_project_manager
+msgid "Project Manager"
+msgstr "Project Manager"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__project_id
+msgid "Project generated by the sales order item"
+msgstr "Proyecto generado por el artículo de pedido de ventas"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order__project_ids
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order__project_line_ids
+msgid "Projects"
+msgstr "Proyectos"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order__project_ids
+msgid "Projects used in this sales order."
+msgstr "Proyectos empleados en este pedido de venta."
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_sale_order_line_view
+msgid "Provision"
+msgstr "Provisionar"
+
+#. module: kvz_backlog
+#: model:backlog.stages,name:kvz_backlog.block_stage_005
+#: model:ir.model.fields.selection,name:kvz_backlog.selection__backlog_stages__stages_type__provisioned
+msgid "Provisioned"
+msgstr "Provisionado"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__income_recognition_date
+msgid "Recognition Date"
+msgstr "Fecha de reconocimiento"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_replan_wizard__date
+msgid "Replan Date"
+msgstr "Fecha de replanificación"
+
+#. module: kvz_backlog
+#: model:ir.model,name:kvz_backlog.model_replan_wizard
+msgid "Replan Wizard"
+msgstr "Asistente de replanificación"
+
+#. module: kvz_backlog
+#: model:ir.actions.act_window,name:kvz_backlog.action_replan_wizard
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_replan_wizard
+msgid "Replanning"
+msgstr "Replanificación"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__replanning_count
+msgid "Replanning Count"
+msgstr "Replanificaciones"
+
+#. module: kvz_backlog
+#: model:ir.actions.server,name:kvz_backlog.ir_cron_resevation_limit_date_exceed_ir_actions_server
+#: model:ir.cron,cron_name:kvz_backlog.ir_cron_resevation_limit_date_exceed
+#: model:ir.cron,name:kvz_backlog.ir_cron_resevation_limit_date_exceed
+msgid "Reservation Limit Date Exceed"
+msgstr "Fecha límite de reserva excedida"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__activity_user_id
+msgid "Responsible User"
+msgstr "Usuario responsable"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Error de entrega de SMS"
+
+#. module: kvz_backlog
+#: model:ir.model,name:kvz_backlog.model_sale_order
+msgid "Sales Order"
+msgstr "Pedido de venta"
+
+#. module: kvz_backlog
+#: model:ir.model,name:kvz_backlog.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línea de pedido de venta"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__user_id
+msgid "Salesperson"
+msgstr "Vendedor"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_sale_order_line_view
+msgid "Send to Provision"
+msgstr "Enviar a Provisionar"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_stages__sequence
+msgid "Sequence"
+msgstr "Secuencia"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__service_id
+msgid "Service"
+msgstr "Servicio"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__source_id
+msgid "Source"
+msgstr "Origen"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__backlog_state_id
+msgid "Stage"
+msgstr "Etapa"
+
+#. module: kvz_backlog
+#: code:addons/kvz_backlog/models/backlog.py:0
+#, python-format
+msgid "Stage ' %s ' Already Exist !!!"
+msgstr "La etapa ' %s ' ya existe."
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_backlog_stages__stages_type
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__stages_type
+msgid "Stages"
+msgstr "Etapas"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__bklg_state
+msgid "State"
+msgstr "Estado"
+
+#. module: kvz_backlog
+#: code:addons/kvz_backlog/wizard/forecast_status_update.py:0
+#: code:addons/kvz_backlog/wizard/forecast_status_update.py:0
+#, python-format
+msgid "Status"
+msgstr "Estado"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Estado basado en actividades\n"
+"Vencido: la fecha de vencimiento ya ha pasado\n"
+"Hoy: la fecha de la actividad es hoy\n"
+"Planificado: actividades futuras."
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.forecast_status_update_wiz_view
+msgid "Submit"
+msgstr "Enviar"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__amount_us
+msgid "Subtotal USD"
+msgstr "Subtotal USD"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__campaign_id
+msgid ""
+"This is a name that helps you keep track of your different campaign efforts,"
+" e.g. Fall_Drive, Christmas_Special"
+msgstr ""
+"Este es un nombre que le ayuda a realizar un seguimiento de sus diferentes "
+"esfuerzos de campaña, por ejemplo, Campaña_Otoño, Especial_Navidad"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__medium_id
+msgid "This is the method of delivery, e.g. Postcard, Email, or Banner Ad"
+msgstr "Este es el método de entrega, por ejemplo, Tarjeta postal, Correo electrónico o Banner"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__source_id
+msgid ""
+"This is the source of the link, e.g. Search Engine, another domain, or name "
+"of email list"
+msgstr ""
+"Este es el origen del enlace, por ejemplo, Motor de búsqueda, otro dominio o "
+"nombre de la lista de correo electrónico"
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.kanban_sale_order_line_view
+msgid "Total :"
+msgstr "Total:"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Tipo de actividad de excepción en el registro."
+
+#. module: kvz_backlog
+#: model_terms:ir.ui.view,arch_db:kvz_backlog.form_sale_order_line_view
+msgid "Unforecast"
+msgstr "Sin pronosticar"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_unread
+msgid "Unread Messages"
+msgstr "Mensajes no leídos"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Contador de mensajes no leídos"
+
+#. module: kvz_backlog
+#: model:res.groups,name:kvz_backlog.group_backlog_users
+msgid "User"
+msgstr "Usuario"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,field_description:kvz_backlog.field_sale_order_line__website_message_ids
+msgid "Website Messages"
+msgstr "Mensajes del sitio web"
+
+#. module: kvz_backlog
+#: model:ir.model.fields,help:kvz_backlog.field_sale_order_line__website_message_ids
+msgid "Website communication history"
+msgstr "Historial de comunicación del sitio web"
+
+#. module: kvz_backlog
+#: code:addons/kvz_backlog/models/backlog.py:0
+#, python-format
+msgid ""
+"You are not allowed to make changes, please contact the Project Manager!"
+msgstr ""
+"No tiene permiso para realizar cambios, por favor contacta al Project Manager."
+
+#. module: kvz_backlog
+#: model:ir.model,name:kvz_backlog.model_backlog_manage
+msgid "backlog.manage"
+msgstr "backlog.manage"

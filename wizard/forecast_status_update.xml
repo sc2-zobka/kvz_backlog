@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--Account Move lines-->
+        <record id="forecast_status_update_wiz_view" model="ir.ui.view">
+            <field name="name">Forcast Status</field>
+            <field name="model">forecast.status.update</field>
+            <field name="arch" type="xml">
+                <form string="Move To Forcats Status">
+                    <span class="o_form_label">IF record is old and not set any status. only this type of record work.</span>
+                    <footer>
+                        <button string="Submit" name="validate" type="object" default_focus="1" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_validate_forcast_status" model="ir.actions.act_window">
+            <field name="name">Forcast Status</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">forecast.status.update</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="forecast_status_update_wiz_view"/>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+            <field name="groups_id" eval="[(4, ref('kvz_backlog.group_backlog_manager'))]"/>
+            <field name="binding_model_id" ref="sale.model_sale_order_line" />
+            <field name="binding_view_types">list</field>
+    </record>
+
+    </data>
+</odoo>
