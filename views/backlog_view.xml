@@ -9,24 +9,28 @@
 					<tree>
 							<field name="project_manager" optional="hide"/>
 							<field name="order_partner_id" readonly="1"/>
-							<field name="country_id" readonly="1"/>
+							<field name="country_id" readonly="1" optional="hide" />
 							<field name="order_id" readonly="1"/>
-							<field name="service_id" />
+							<field name="service_id" optional="hide" />
 							<field name="project_id" readonly="1" optional="hide"/>
 							<field name="name" readonly="1"/>
 							<field name="state" optional="hide"/>
-							<field name="backlog_state_id"/>
-							<field name="bklg_state"/>
-							<field name="date_deadline"/>
-							<field name="income_recognition_date"/>
+							<field name="backlog_state_id" optional="hide"/>
+							<field name="bklg_state" optional="hide" />
+							<field name="date_deadline" optional="hide" />
+							<field name="income_recognition_date" optional="hide"/>
 							<field name="company_id" column_invisible="True"/>
 							<field name="currency_id" optional="hide"/>
-							<field name="cpl_currency_id" readonly="1"/>
-							<field name="replanning_count" readonly="1"/>
+							<field name="cpl_currency_id" readonly="1" optional="hide" />
+							<field name="replanning_count" readonly="1" optional="hide" />
 							<field name="amount_us" />
 							<field name="price_total"/>
 							<field name="clp_price_total" widget="monetary"  options="{'currency_field': 'cpl_currency_id'}"/>
 							<field name="invoice_status" optional="hide"/>
+							<!-- Invoicing Information -->
+							 <field name="invoice_number" optional="show" />
+							<field name="real_invoiced_amount" optional="show" />
+							<field name="real_invoice_total" optional="show" />
 					</tree>
 				</field>
 			</record>

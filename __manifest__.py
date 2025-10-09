@@ -11,13 +11,14 @@
     'installable' : True,
     'application': True,
     'category': 'Sales/Sales',
-    'version': "17.0.1.0.1",
+    'version': "17.0.1.0.2",
     'depends': [
         'sale',
         'sale_timesheet',
         'project',
         'sale_project',
-        'mail'
+        'mail',
+        'planning',
     ],
     'data': [
         'demo/data.xml',
@@ -32,10 +33,8 @@
         'views/backlog_stages.xml',
         'views/group_access.xml',
         'views/sale_project.xml',
-        'views/backlog_menus.xml'
-    ],
-    'demo': [
-
+        'views/backlog_menus.xml',
+        
     ],
     'license': 'LGPL-3',
 }
