@@ -31,6 +31,14 @@
 							 <field name="invoice_number" optional="show" />
 							<field name="real_invoiced_amount" optional="show" />
 							<field name="real_invoice_total" optional="show" />
+							<!-- Credit Note Information -->
+							<field name="has_credit_note" optional="show" widget="boolean_toggle" />
+							<field name="credit_note_number" optional="show" />
+							<field name="credit_note_amount" optional="show" />
+							<!-- Provision Information -->
+							<field name="initial_provisioned_amount" optional="show"/>
+							<field name="initial_provisioned_amount_datetime" column_invisible="True" string="Fecha Provision Inicial"/> 
+
 					</tree>
 				</field>
 			</record>
