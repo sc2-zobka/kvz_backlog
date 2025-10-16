@@ -136,14 +136,14 @@
 								groups="kvz_backlog.group_backlog_manager,account.group_account_invoice,account.group_account_manager,account.group_account_user"
 								invisible="stages_type != 'planning'"
 							/>
-							<button
+							<!-- <button
 								name="action_invoice"
 								string="Invoice"
 								type="object"
 								class="oe_highlight"
 								groups="kvz_backlog.group_backlog_manager,account.group_account_invoice,account.group_account_manager,account.group_account_user"
 								invisible="stages_type not in ('planning','provisioned')"
-							/>
+							/> -->
 							<button
 								name="action_reverse_provision"
 								string="Reverse"
