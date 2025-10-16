@@ -87,8 +87,7 @@ class SaleOrderLine(models.Model):
         store=True,
     )
 
-    # TODO: resolver dudas en las notas con Marlon
-    @api.depends("backlog_state_id", "price_total")
+    @api.depends("backlog_state_id", "price_subtotal")
     def _compute_initial_provisioned_amount(self):
         """Compute initial provisioned amount and datetime (one-time snapshot)"""
 
@@ -105,7 +104,7 @@ class SaleOrderLine(models.Model):
                 continue
             
             if record.backlog_state_id.id == provisioned_stage.id:
-                record.initial_provisioned_amount = record.price_total or 0.0
+                record.initial_provisioned_amount = record.price_subtotal or 0.0
                 record.initial_provisioned_amount_datetime = fields.Datetime.now()
 
     @api.depends("invoice_lines.move_id.name")
