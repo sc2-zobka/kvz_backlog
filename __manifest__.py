@@ -22,7 +22,7 @@
     ],
     'data': [
         'demo/data.xml',
-        'demo/cron.xml',
+        # 'demo/cron.xml',
         'security/security.xml',
         'security/ir.model.access.csv',
         'security/sale_project_security.xml',

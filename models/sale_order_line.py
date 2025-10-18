@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo import models, fields, api
 
 import logging
 
@@ -62,15 +61,15 @@ class SaleOrderLine(models.Model):
         store=True,
     )
 
-    #TODO: revisar si es necesario
-    real_provisioned_amount_to_date = fields.Float(
-        string="Monto Real Provisionado a la fecha",
-        # compute="_compute_real_provisioned_amount",
-        store=True,
-        default=0.0,
-        readonly=True,
-        help="Es cero cuando la línea de pedido está facturada",
-    )
+    # TODO: revisar si es necesario
+    # real_provisioned_amount_to_date = fields.Float(
+    #     string="Monto Real Provisionado a la fecha",
+    #     # compute="_compute_real_provisioned_amount",
+    #     store=True,
+    #     default=0.0,
+    #     readonly=True,
+    #     help="Es cero cuando la línea de pedido está facturada",
+    # )
 
     initial_provisioned_amount = fields.Float(
         string="Monto Inicial Provisionado",
@@ -78,7 +77,7 @@ class SaleOrderLine(models.Model):
         default=0.0,
         readonly=True,
         store=True,
-        help="Amount that was provisioned when the sale order line was created and set to provisioned status.",
+        help="Captura el monto de la línea de pedido cuando se mueve a la etapa 'Provisionado'. ",
     )
 
     initial_provisioned_amount_datetime = fields.Datetime(
@@ -96,13 +95,14 @@ class SaleOrderLine(models.Model):
         )
 
         if not provisioned_stage:
-            raise UserError(_("Etapa 'Provisionado' no encontrada."))
+            _logger.warning("Etapa 'Provisionado' (block_stage_005) no encontrada.")
+            return
 
         for record in self:
             # If already captured, preserve it (one-time snapshot)
             if record.initial_provisioned_amount_datetime:
                 continue
-            
+
             if record.backlog_state_id.id == provisioned_stage.id:
                 record.initial_provisioned_amount = record.price_subtotal or 0.0
                 record.initial_provisioned_amount_datetime = fields.Datetime.now()
@@ -212,28 +212,33 @@ class SaleOrderLine(models.Model):
                     f"Status={record.invoice_status}"
                 )
 
-    @api.depends('invoice_lines.move_id.state', 'qty_to_invoice', 'qty_invoiced')
+    @api.depends("invoice_lines.move_id.state", "qty_to_invoice", "qty_invoiced")
     def _compute_invoice_status(self):
         """
         Override to automatically update backlog state when invoice_status changes.
         Uses direct assignment instead of write() to avoid recursion.
         """
         super(SaleOrderLine, self)._compute_invoice_status()
-        
+
         invoiced_stage = self.env.ref(
             "kvz_backlog.block_stage_006", raise_if_not_found=False
         )
-        
+
         if not invoiced_stage:
             _logger.warning("Etapa 'Facturado' (block_stage_006) no encontrada.")
             return
-        
+
         for line in self:
-            if line.invoice_status == 'invoiced':
-                if hasattr(line, 'bklg_state') and line.bklg_state != 'invoiced':
-                    line.bklg_state = 'invoiced'
-                
-                if hasattr(line, 'backlog_state_id') and line.backlog_state_id.id != invoiced_stage.id:
+            if line.invoice_status == "invoiced":
+                if hasattr(line, "bklg_state") and line.bklg_state != "invoiced":
+                    line.bklg_state = "invoiced"
+
+                if (
+                    hasattr(line, "backlog_state_id")
+                    and line.backlog_state_id.id != invoiced_stage.id
+                ):
                     line.backlog_state_id = invoiced_stage
-                
-                _logger.debug(f"Sale line {line.id} backlog state updated to 'invoiced'")
+
+                _logger.debug(
+                    f"Sale line {line.id} backlog state updated to 'invoiced'"
+                )

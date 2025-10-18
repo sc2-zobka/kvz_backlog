@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+    <!-- <data>
 
         <record id="ir_cron_resevation_limit_date_exceed" model="ir.cron">
             <field name="name">Reservation Limit Date Exceed</field>
@@ -13,5 +13,5 @@
             <field name="active">True</field>
         </record>
        
-     </data>
+     </data> -->
 </odoo>

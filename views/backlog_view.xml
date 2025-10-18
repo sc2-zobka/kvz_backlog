@@ -183,7 +183,7 @@
 									<field name="date_deadline" readonly="bklg_state in ['forecast', 'provisioned', 'invoiced']" required="is_required_date" />
 									<field name="price_subtotal" readonly="1"/>
 									<field name="cpl_currency_id" readonly="1" invisible="not forecast_date" />
-									<field name="clp_price_total" readonly="1" widget="monetary"  options="{'currency_field': 'cpl_currency_id'}"/>
+									<field name="clp_price_total" readonly="1" widget="monetary"  options="{'currency_field': 'cpl_currency_id'}" digits="[16, 0]"/>
 									<field name="amount_us" />
 									<field name="income_recognition_date" readonly="1"/>
 									<field name="replanning_count" readonly="1"/>
