@@ -14,9 +14,9 @@ class SaleOrderLine(models.Model):
         compute="_compute_real_invoiced_amounts",
         store=True,
         readonly=True,
-        help="Real amount for this specific line from the actual invoices in accounting. "
-        "Taxes excluded. "
-        "Includes refunds (negative amounts).",
+        help="Monto real para esta línea específico desde las facturas en contabilidad. "
+        "Impuestos excluidos. "
+        "Incluye reembolsos (montos negativos).",
     )
 
     real_invoice_total = fields.Float(
@@ -24,9 +24,9 @@ class SaleOrderLine(models.Model):
         compute="_compute_real_invoiced_amounts",
         store=True,
         readonly=True,
-        help="Total amount of all related invoices (entire invoice amount). "
-        "Taxes included. "
-        "Sum of all invoices related to this line.",
+        help="Monto total de todas las facturas relacionadas (monto completo). "
+        "Incluye impuestos. "
+        "Suma de todas las facturas asociadas a esta línea.",
     )
 
     invoice_number = fields.Char(
@@ -60,28 +60,18 @@ class SaleOrderLine(models.Model):
         readonly=True,
         store=True,
     )
-
-    # TODO: revisar si es necesario
-    # real_provisioned_amount_to_date = fields.Float(
-    #     string="Monto Real Provisionado a la fecha",
-    #     # compute="_compute_real_provisioned_amount",
-    #     store=True,
-    #     default=0.0,
-    #     readonly=True,
-    #     help="Es cero cuando la línea de pedido está facturada",
-    # )
-
+   
     initial_provisioned_amount = fields.Float(
         string="Monto Inicial Provisionado",
         compute="_compute_initial_provisioned_amount",
         default=0.0,
         readonly=True,
         store=True,
-        help="Captura el monto de la línea de pedido cuando se mueve a la etapa 'Provisionado'. ",
+        help="Captura el monto de la línea de pedido cuando se mueve a la etapa 'Provisionado'. Sin IVA.",
     )
 
     initial_provisioned_amount_datetime = fields.Datetime(
-        help="When initial provisioned amount was set.",
+        help="Fecha y hora en que se registró el monto inicial provisionado.",
         readonly=True,
         store=True,
     )
@@ -99,7 +89,7 @@ class SaleOrderLine(models.Model):
             return
 
         for record in self:
-            # If already captured, preserve it (one-time snapshot)
+            
             if record.initial_provisioned_amount_datetime:
                 continue
 

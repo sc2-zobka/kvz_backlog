@@ -2,7 +2,10 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from datetime import datetime, date
 from lxml import etree
-import pdb
+from markupsafe import Markup
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class BacklogStages(models.Model):
@@ -69,13 +72,9 @@ class kvz_backlog_lines(models.Model):
         # readonly=True,copy=False,states={'draft': [('readonly', False)]},
         check_company=True,
     )
-    # Client from sale_order_line: order_partner_id
-    # Country form order_partner_id.country
-    # Quotation from order_id
     current_user_id = fields.Boolean(
         string="Current Users", compute="compute_get_users"
     )
-
     country_id = fields.Many2one(
         "res.country",
         string="Country",
@@ -112,8 +111,18 @@ class kvz_backlog_lines(models.Model):
     # Currency from sale_order_line currency_id
     # Amount in currency from sale_order_line price_total
     clp_price_total = fields.Monetary(
-        string="Price Subtotal CLP", compute="compute_clp_currency", store=True
+        string="Price total CLP",
+        compute="compute_clp_currency",
+        store=True,
+        help="Monto en CLP con IVA.",
     )
+    clp_price_subtotal = fields.Monetary(
+        string="Price Subtotal CLP",
+        compute="compute_clp_currency",
+        store=True,
+        help="Monto en CLP sin IVA.",
+    )
+
     state = fields.Selection(
         related="order_id.state", store=True, string="Order Status"
     )
@@ -318,7 +327,6 @@ class kvz_backlog_lines(models.Model):
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
         return self.env["backlog.stages"].search([])
-   
 
     # Compute on Nivel Riesgo
     @api.depends(
@@ -328,21 +336,38 @@ class kvz_backlog_lines(models.Model):
         "forecast_date",
         "create_date",
         "order_id.company_id",
+        "invoice_status",
+        "bklg_state",
     )
     def compute_clp_currency(self):
-        clp_currency = self.env.ref("base.CLP", raise_if_not_found=False) or self.cpl_currency_id
-        			
+        clp_currency = self.env.ref(
+            "base.CLP", raise_if_not_found=False
+        )
+
         if not clp_currency:
-            self.clp_price_total = 0.0
+            for rec in self:
+                rec.clp_price_total = 0.0
+                rec.clp_price_subtotal = 0.0
             return
 
         for rec in self:
+            # Skip computation if already invoiced or provisioned
+            if rec.invoice_status == "invoiced" or rec.bklg_state == "provisioned":
+                continue
+
             company = rec.order_id.company_id or self.env.company
             rate_date = (
                 rec.forecast_date or rec.create_date or fields.Date.context_today(rec)
             )
+
             rec.clp_price_total = rec.currency_id._convert(
                 rec.price_total,
+                clp_currency,
+                company,
+                rate_date,
+            )
+            rec.clp_price_subtotal = rec.currency_id._convert(
+                rec.price_subtotal,
                 clp_currency,
                 company,
                 rate_date,
@@ -355,20 +380,28 @@ class kvz_backlog_lines(models.Model):
         "forecast_date",
         "create_date",
         "order_id.company_id",
+        "bklg_state",
     )
     def _compute_amount_us(self):
-        usd = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
+        usd = self.env.ref("base.USD", raise_if_not_found=False)
+
         if not usd:
-            self.amount_us = 0.0
+            for rec in self:
+                rec.amount_us = 0.0
             return
 
         for rec in self:
+            # Skip computation if provisioned
+            if rec.bklg_state == "provisioned":
+                continue
+
+            company = rec.order_id.company_id or self.env.company
             rate_date = (
                 rec.forecast_date or rec.create_date or fields.Date.context_today(rec)
             )
-            company = rec.order_id.company_id or self.env.company
+
             rec.amount_us = rec.currency_id._convert(
-                rec.price_total,
+                rec.price_subtotal,
                 usd,
                 company,
                 rate_date,
@@ -388,31 +421,60 @@ class kvz_backlog_lines(models.Model):
             )
 
     def action_provision(self):
+        """Mark lines as provisioned and freeze currency amounts"""
         stage_provisioned = self.env["backlog.stages"].search(
             [("stages_type", "=", "provisioned")], limit=1
         )
+
+        if not stage_provisioned:
+            _logger.warning("Etapa 'Provisionado' no encontrada.")
+            return
+
+        self.sudo().write(
+            {
+                "income_recognition_date": fields.Date.context_today(self),
+                "backlog_state_id": stage_provisioned.id,
+                "bklg_state": "provisioned",
+            }
+        )
+
         for rec in self:
-            rec.sudo().write(
-                {
-                    "income_recognition_date": fields.Date.context_today(self),
-                    "backlog_state_id": stage_provisioned.id
-                    if stage_provisioned
-                    else False,
-                    "bklg_state": "provisioned",
-                }
+            rec.message_post(
+                body=Markup(
+                    f"Moved to Provisioned stage by <b><i>{self.env.user.name}</i></b>. Currency amounts frozen."
+                )
             )
 
     def action_reverse_provision(self):
+        """Reverse provision and force recalculation of currency amounts"""
         stage_planning = self.env["backlog.stages"].search(
             [("stages_type", "=", "planning")], limit=1
         )
+
+        if not stage_planning:
+            _logger.warning("Etapa 'Planning' no encontrada.")
+            return
+
+        # First update the state to trigger recomputation
+        self.sudo().write(
+            {
+                "income_recognition_date": False,
+                "backlog_state_id": stage_planning.id,
+                "bklg_state": "planning",
+                "initial_provisioned_amount": 0.0,  
+                "initial_provisioned_amount_datetime": False,
+            }
+        )
+
+        # Force recomputation of currency fields
+        self._compute_amount_us()
+        self.compute_clp_currency()
+
         for rec in self:
-            rec.sudo().write(
-                {
-                    "income_recognition_date": fields.Date.context_today(self),
-                    "backlog_state_id": stage_planning.id if stage_planning else False,
-                    "bklg_state": "planning",
-                }
+            rec.message_post(
+                body=Markup(
+                    f"Reversed provision by <b><i>{self.env.user.name}</i></b>. Currency amounts recalculated."
+                )
             )
 
     @api.model
