@@ -1,0 +1,123 @@
+# --------------------------------------------
+# Core Odoo & Python
+# --------------------------------------------
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+*.eggs/
+.Python
+.env
+venv/
+ENV/
+.envrc
+*.mo
+
+# --------------------------------------------
+# Odoo Specific
+# --------------------------------------------
+.odoo_session
+.odoo_upgrade
+*.zip
+*.log
+*.pot
+*.po~
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+
+# Compiled translation files
+i18n/*.mo
+i18n_extra/*.mo
+
+# Odoo build dirs
+/build/
+.odoo/
+.odoo_server/
+odoo/addons/base_import/tests/imports/
+
+# Custom addons artifacts
+*/static/lib/
+*/static/src/js/build/
+*/static/src/css/build/
+*/static/description/icon.png
+
+# --------------------------------------------
+# Database, data & backups
+# --------------------------------------------
+*.db
+*.sql
+*.dump
+*.rdb
+*.backup
+*.csv
+*.xlsx
+*.ods
+*.pdf
+*.zip
+*.tar.gz
+
+# --------------------------------------------
+# IDE & Editor files
+# --------------------------------------------
+.vscode/
+.idea/
+*.code-workspace
+
+# --------------------------------------------
+# Docker & Compose
+# --------------------------------------------
+*.pid
+docker-compose.override.yml
+docker-compose.dev.yml
+docker-compose.local.yml
+.docker/
+.dockerignore
+data/
+postgres_data/
+odoo_data/
+filestore/
+sessions/
+logs/
+addons-extra/
+addons-custom/
+
+# --------------------------------------------
+# System & OS
+# --------------------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.cache/
+.tmp/
+tmp/
+__MACOSX/
+
+# --------------------------------------------
+# Testing & coverage
+# --------------------------------------------
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+nosetests.xml
+junit.xml
+coverage.xml
+*.lcov
+
+# --------------------------------------------
+# Node / Frontend assets
+# --------------------------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+dist/
+build/
