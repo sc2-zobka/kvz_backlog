@@ -340,9 +340,7 @@ class kvz_backlog_lines(models.Model):
         "bklg_state",
     )
     def compute_clp_currency(self):
-        clp_currency = self.env.ref(
-            "base.CLP", raise_if_not_found=False
-        )
+        clp_currency = self.env.ref("base.CLP", raise_if_not_found=False)
 
         if not clp_currency:
             for rec in self:
@@ -353,6 +351,12 @@ class kvz_backlog_lines(models.Model):
         for rec in self:
             # Skip computation if already invoiced or provisioned
             if rec.invoice_status == "invoiced" or rec.bklg_state == "provisioned":
+                continue
+
+            # If currency is already CLP, no conversion needed
+            if rec.currency_id == clp_currency:
+                rec.clp_price_total = rec.price_total
+                rec.clp_price_subtotal = rec.price_subtotal
                 continue
 
             company = rec.order_id.company_id or self.env.company
@@ -384,6 +388,7 @@ class kvz_backlog_lines(models.Model):
     )
     def _compute_amount_us(self):
         usd = self.env.ref("base.USD", raise_if_not_found=False)
+        clp = self.env.ref("base.CLP", raise_if_not_found=False)
 
         if not usd:
             for rec in self:
@@ -395,17 +400,34 @@ class kvz_backlog_lines(models.Model):
             if rec.bklg_state == "provisioned":
                 continue
 
+            # If currency is already USD, no conversion needed
+            if rec.currency_id == usd:
+                rec.amount_us = rec.price_subtotal
+                continue
+
             company = rec.order_id.company_id or self.env.company
             rate_date = (
                 rec.forecast_date or rec.create_date or fields.Date.context_today(rec)
             )
 
-            rec.amount_us = rec.currency_id._convert(
-                rec.price_subtotal,
-                usd,
-                company,
-                rate_date,
-            )
+            # Special handling for CLP → USD using inverse rate
+            if rec.currency_id == clp and clp:
+                # Use round=False to get exact conversion, then round manually if needed
+                rec.amount_us = rec.currency_id._convert(
+                    rec.price_subtotal,
+                    usd,
+                    company,
+                    rate_date,
+                    round=False,  # Odoo 17 parameter for precise conversion
+                )
+            else:
+                
+                rec.amount_us = rec.currency_id._convert(
+                    rec.price_subtotal,
+                    usd,
+                    company,
+                    rate_date,
+                )
 
     def action_invoice(self):
         stage_invoiced = self.env["backlog.stages"].search(
@@ -461,7 +483,7 @@ class kvz_backlog_lines(models.Model):
                 "income_recognition_date": False,
                 "backlog_state_id": stage_planning.id,
                 "bklg_state": "planning",
-                "initial_provisioned_amount": 0.0,  
+                "initial_provisioned_amount": 0.0,
                 "initial_provisioned_amount_datetime": False,
             }
         )
