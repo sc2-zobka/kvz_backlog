@@ -32,7 +32,7 @@
 							<field name="real_invoiced_amount" optional="show" />
 							<field name="real_invoice_total" optional="show" />
 							<!-- Credit Note Information -->
-							<field name="has_credit_note" optional="show" widget="boolean_toggle" />
+							<field name="has_credit_note" column_invisible="True" />
 							<field name="credit_note_number" optional="show" />
 							<field name="credit_note_amount" optional="show" />
 							<!-- Provision Information -->
@@ -190,6 +190,7 @@
 
 									
 									<field name="replanning_count" readonly="1"/>
+									<field name="income_recognition_date" readonly="1"/>
 									<field name="state" readonly="1" invisible="1"/>
 									<field name="invoice_status" readonly="1" invisible="1"/>
 									<field name="currency_id" invisible="1"/>
@@ -211,8 +212,8 @@
 								<group string="Provision Details">
 									<!-- Provision Information -->
 									<field name="initial_provisioned_amount"/>
-									<field name="initial_provisioned_amount_datetime" invisible="1"/>
-									<field name="income_recognition_date" readonly="1"/>
+									<field name="initial_provisioned_amount_datetime" string="Provision Date" readonly="1"/>
+									
 								</group>	
 							</group>
 						</sheet>

@@ -451,7 +451,7 @@ class kvz_backlog_lines(models.Model):
         if not stage_provisioned:
             _logger.warning("Etapa 'Provisionado' no encontrada.")
             return
-
+        
         self.sudo().write(
             {
                 "income_recognition_date": fields.Date.context_today(self),

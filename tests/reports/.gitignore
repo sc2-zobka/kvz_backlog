@@ -1,0 +1,5 @@
+# Ignore all test report files
+*.txt
+
+# But keep the directory structure
+!.gitignore

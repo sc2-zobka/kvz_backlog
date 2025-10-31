@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
-import logging
+import logging 
 
 _logger = logging.getLogger(__name__)
 
@@ -60,7 +60,7 @@ class SaleOrderLine(models.Model):
         readonly=True,
         store=True,
     )
-   
+
     initial_provisioned_amount = fields.Float(
         string="Monto Inicial Provisionado",
         compute="_compute_initial_provisioned_amount",
@@ -71,7 +71,7 @@ class SaleOrderLine(models.Model):
     )
 
     initial_provisioned_amount_datetime = fields.Datetime(
-        help="Fecha y hora en que se registró el monto inicial provisionado.",
+        help="Fecha y hora en que se registró el monto provisionado.",
         readonly=True,
         store=True,
     )
@@ -89,7 +89,6 @@ class SaleOrderLine(models.Model):
             return
 
         for record in self:
-            
             if record.initial_provisioned_amount_datetime:
                 continue
 
@@ -109,6 +108,7 @@ class SaleOrderLine(models.Model):
                 lambda ml: ml.move_id
                 and ml.move_id.move_type == "out_invoice"
                 and ml.move_id.state == "posted"
+                and ml.move_id.l10n_cl_dte_status in ["objected", "accepted"]
             )
             if invoice_line:
                 line.invoice_number = invoice_line[0].move_id.name
@@ -134,6 +134,7 @@ class SaleOrderLine(models.Model):
                 lambda ml: ml.move_id
                 and ml.move_id.move_type == "out_refund"
                 and ml.move_id.state == "posted"
+                and ml.move_id.l10n_cl_dte_status in ["objected", "accepted"]
             )
 
             if credit_note_lines:
@@ -175,6 +176,7 @@ class SaleOrderLine(models.Model):
                 lambda ml: ml.move_id
                 and ml.move_id.state == "posted"
                 and ml.move_id.move_type in ["out_invoice", "out_refund"]
+                and ml.move_id.l10n_cl_dte_status in ["objected", "accepted"]
             )
 
             if not posted_invoice_lines:
@@ -194,7 +196,7 @@ class SaleOrderLine(models.Model):
 
             # Optional: Log for debugging
             if record.real_invoiced_amount:
-                _logger.debug(
+                _logger.info(
                     f"Sale line {record.id}: "
                     f"Line amount={record.real_invoiced_amount}, "
                     f"Invoice total={record.real_invoice_total}, "
@@ -206,6 +208,7 @@ class SaleOrderLine(models.Model):
     def _compute_invoice_status(self):
         """
         Override to automatically update backlog state when invoice_status changes.
+        Only updates when all related invoices are posted.
         Uses direct assignment instead of write() to avoid recursion.
         """
         super(SaleOrderLine, self)._compute_invoice_status()
@@ -219,16 +222,27 @@ class SaleOrderLine(models.Model):
             return
 
         for line in self:
+            # Check if invoice_status is invoiced AND all related invoices are posted
             if line.invoice_status == "invoiced":
-                if hasattr(line, "bklg_state") and line.bklg_state != "invoiced":
-                    line.bklg_state = "invoiced"
-
-                if (
-                    hasattr(line, "backlog_state_id")
-                    and line.backlog_state_id.id != invoiced_stage.id
-                ):
-                    line.backlog_state_id = invoiced_stage
-
-                _logger.debug(
-                    f"Sale line {line.id} backlog state updated to 'invoiced'"
+                # Verify that all related invoices are actually posted
+                posted_invoices = line.invoice_lines.filtered(
+                    lambda ml: ml.move_id
+                    and ml.move_id.move_type in ["out_invoice", "out_refund"]
+                    and ml.move_id.state == "posted"
+                    and ml.move_id.l10n_cl_dte_status in ["objected", "accepted"]
                 )
+
+                # Only update backlog state if there are posted invoices
+                if posted_invoices:
+                    if hasattr(line, "bklg_state") and line.bklg_state != "invoiced":
+                        line.bklg_state = "invoiced"
+
+                    if (
+                        hasattr(line, "backlog_state_id")
+                        and line.backlog_state_id.id != invoiced_stage.id
+                    ):
+                        line.backlog_state_id = invoiced_stage
+
+                    _logger.info(
+                        f"Sale line {line.id} backlog state updated to 'invoiced'"
+                    )

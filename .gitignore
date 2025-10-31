@@ -66,6 +66,7 @@ odoo/addons/base_import/tests/imports/
 .vscode/
 .idea/
 *.code-workspace
+claude/
 
 # --------------------------------------------
 # Docker & Compose
