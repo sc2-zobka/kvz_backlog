@@ -104,13 +104,26 @@ class TestInvoiceStatus(TransactionCase):
         # Write to file - THIS ALWAYS HAPPENS
         report_content = "\n".join(report_lines)
 
-        # Determine report file path
-        module_path = os.path.dirname(os.path.dirname(__file__))
+        # Determine report file path using Odoo's module path
+        try:
+            # Get the module path from Odoo's module registry
+            import odoo.modules as addons
+
+            module_path = addons.get_module_path("kvz_backlog")
+        except Exception:
+            # Fallback to __file__ if module path resolution fails
+            module_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
         reports_dir = os.path.join(module_path, "tests", "reports")
 
         try:
             # Create reports directory if it doesn't exist
             os.makedirs(reports_dir, exist_ok=True)
+
+            # Log the actual path being used
+            _logger.info(f"Report directory: {reports_dir}")
+            _logger.info(f"Directory exists: {os.path.exists(reports_dir)}")
+            _logger.info(f"Directory is writable: {os.access(reports_dir, os.W_OK)}")
 
             # Generate filename with timestamp
             filename = (
@@ -118,21 +131,22 @@ class TestInvoiceStatus(TransactionCase):
             )
             report_path = os.path.join(reports_dir, filename)
 
-            # Also create a "latest" version
-            latest_path = os.path.join(reports_dir, "test_invoice_status_latest.txt")
-
-            # Write the timestamped report
+            # Write the report
             with open(report_path, "w", encoding="utf-8") as f:
                 f.write(report_content)
+            _logger.info(f"Report written to: {report_path}")
 
-            # Write latest version
-            with open(latest_path, "w", encoding="utf-8") as f:
-                f.write(report_content)
+            # Verify file was created
+            if os.path.exists(report_path):
+                _logger.info(
+                    f"✓ Confirmed: Report file exists with size {os.path.getsize(report_path)} bytes"
+                )
+            else:
+                _logger.error(f"✗ Report file NOT found at {report_path}")
 
             # Log success
             _logger.info("=" * 80)
             _logger.info(f"Test report saved to: {report_path}")
-            _logger.info(f"Latest report: {latest_path}")
             _logger.info("=" * 80)
 
             # Also print to console if available (but file writing happens regardless)
