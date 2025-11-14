@@ -48,10 +48,6 @@ class SaleOrde(models.Model):
             order.project_ids = projects + order.project_line_ids
             order.project_count = len(projects) + len(order.project_line_ids)
 
-    # def _inverse__compute_project_id(self):
-    # 	for record in self:
-    # 		record.project_line_ids = record.project_ids.ids
-
     def action_confirm(self):
         res = super().action_confirm()
         backlog_state_id = self.env["backlog.stages"].search(
