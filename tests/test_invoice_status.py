@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from odoo.tests.common import TransactionCase
+
+from odoo.tests.common import TransactionCase, tagged
+from odoo import fields
 import logging
 import os
 from datetime import datetime
@@ -7,6 +9,7 @@ from datetime import datetime
 _logger = logging.getLogger(__name__)
 
 
+@tagged("post_install", "-at_install")
 class TestInvoiceStatus(TransactionCase):
     """Test cases for _compute_invoice_status method in sale.order.line"""
 
@@ -398,6 +401,435 @@ class TestInvoiceStatus(TransactionCase):
 
             self._log_test_result(
                 test_name, True, "Objected DTE correctly updated backlog state"
+            )
+
+        except AssertionError as e:
+            self._log_test_result(test_name, False, str(e))
+            raise
+
+    def test_credit_note_reverts_backlog_state(self):
+        """Test that posting a credit note dynamically reverts the backlog state (Odoo 17 idiomatic approach)"""
+        test_name = "Credit Note Reverts Backlog State (Dynamic Computation)"
+
+        try:
+            # Get planning stage for initial state
+            planning_stage = self.env.ref(
+                "kvz_backlog.block_stage_002", raise_if_not_found=False
+            )
+
+            # Create a sale order
+            sale_order = self.env["sale.order"].create(
+                {
+                    "partner_id": self.partner.id,
+                    "order_line": [
+                        (
+                            0,
+                            0,
+                            {
+                                "product_id": self.product.id,
+                                "product_uom_qty": 1.0,
+                                "price_unit": 100.0,
+                                "qty_delivered": 1.0,
+                            },
+                        )
+                    ],
+                }
+            )
+
+            # Confirm sale order
+            sale_order.action_confirm()
+            sol = sale_order.order_line[0]
+
+            # Set initial backlog state to planning
+            if planning_stage:
+                sol.bklg_state = "planning"
+                sol.backlog_state_id = planning_stage
+
+            initial_state = sol.bklg_state
+            initial_stage = sol.backlog_state_id
+
+            _logger.info(
+                f"Initial state: {initial_state}, stage: {initial_stage.name if initial_stage else None}"
+            )
+
+            # Create and post invoice
+            invoice = sale_order._create_invoices()
+            invoice.action_post()
+
+            # Set DTE status to accepted
+            if hasattr(invoice, "l10n_cl_dte_status"):
+                invoice.l10n_cl_dte_status = "accepted"
+
+            # Trigger compute to mark as invoiced
+            sol._compute_invoice_status()
+
+            # Verify it was marked as invoiced
+            self.assertEqual(
+                sol.bklg_state,
+                "invoiced",
+                "Backlog state should be 'invoiced' after posting invoice",
+            )
+
+            _logger.info(f"After invoice: state={sol.bklg_state}")
+
+            # Create a credit note for the invoice (full refund)
+            refund_wizard = (
+                self.env["account.move.reversal"]
+                .with_context(active_model="account.move", active_ids=invoice.ids)
+                .create(
+                    {
+                        "reason": "Test credit note",
+                        "journal_id": invoice.journal_id.id,
+                    }
+                )
+            )
+
+            # Create the refund
+            refund_action = refund_wizard.reverse_moves()
+            credit_note = self.env["account.move"].browse(refund_action["res_id"])
+
+            # Post the credit note
+            credit_note.action_post()
+
+            # Set DTE status to accepted
+            if hasattr(credit_note, "l10n_cl_dte_status"):
+                credit_note.l10n_cl_dte_status = "accepted"
+
+            _logger.info(f"Credit note created and posted: {credit_note.name}")
+
+            # Trigger compute to detect credit note
+            # State should be computed dynamically based on net amount (invoice - credit_note = 0)
+            sol._compute_invoice_status()
+            sol._compute_credit_note_info()
+
+            _logger.info(
+                f"After credit note: state={sol.bklg_state}, has_credit_note={sol.has_credit_note}"
+            )
+
+            # Assertions - state should be reverted AUTOMATICALLY
+            self.assertTrue(
+                sol.has_credit_note,
+                "Sale order line should have a credit note",
+            )
+
+            # State should revert to planning (since net invoiced amount is now zero)
+            self.assertEqual(
+                sol.bklg_state,
+                initial_state,
+                f"Backlog state should dynamically revert to '{initial_state}' "
+                f"after full credit note (net amount = 0)",
+            )
+
+            if planning_stage and initial_stage:
+                self.assertEqual(
+                    sol.backlog_state_id.id,
+                    initial_stage.id,
+                    f"Backlog stage should dynamically revert to '{initial_stage.name}' "
+                    f"after credit note",
+                )
+
+            self._log_test_result(
+                test_name,
+                True,
+                "Backlog state correctly reverted using dynamic computation (no stored state)",
+            )
+
+        except AssertionError as e:
+            self._log_test_result(test_name, False, str(e))
+            raise
+
+    def test_credit_note_with_objected_dte_reverts_state(self):
+        """Test that credit note with objected DTE status dynamically reverts backlog state (Odoo 17 idiomatic)"""
+        test_name = "Credit Note with Objected DTE Reverts State (Dynamic)"
+
+        try:
+            # Get planning stage for initial state
+            planning_stage = self.env.ref(
+                "kvz_backlog.block_stage_002", raise_if_not_found=False
+            )
+
+            # Create a sale order
+            sale_order = self.env["sale.order"].create(
+                {
+                    "partner_id": self.partner.id,
+                    "order_line": [
+                        (
+                            0,
+                            0,
+                            {
+                                "product_id": self.product.id,
+                                "product_uom_qty": 1.0,
+                                "price_unit": 100.0,
+                                "qty_delivered": 1.0,
+                            },
+                        )
+                    ],
+                }
+            )
+
+            # Confirm sale order
+            sale_order.action_confirm()
+            sol = sale_order.order_line[0]
+
+            # Set initial backlog state to planning
+            if planning_stage:
+                sol.bklg_state = "planning"
+                sol.backlog_state_id = planning_stage
+
+            initial_state = sol.bklg_state
+
+            # Create and post invoice
+            invoice = sale_order._create_invoices()
+            invoice.action_post()
+
+            if hasattr(invoice, "l10n_cl_dte_status"):
+                invoice.l10n_cl_dte_status = "accepted"
+
+            # Trigger compute to mark as invoiced
+            sol._compute_invoice_status()
+
+            # Verify it was marked as invoiced
+            self.assertEqual(sol.bklg_state, "invoiced")
+
+            # Create a credit note
+            refund_wizard = (
+                self.env["account.move.reversal"]
+                .with_context(active_model="account.move", active_ids=invoice.ids)
+                .create(
+                    {
+                        "reason": "Test objected credit note",
+                        "journal_id": invoice.journal_id.id,
+                    }
+                )
+            )
+
+            refund_action = refund_wizard.reverse_moves()
+            credit_note = self.env["account.move"].browse(refund_action["res_id"])
+            credit_note.action_post()
+
+            # Set DTE status to objected (not accepted)
+            if hasattr(credit_note, "l10n_cl_dte_status"):
+                credit_note.l10n_cl_dte_status = "objected"
+
+            # Trigger compute
+            sol._compute_invoice_status()
+            sol._compute_credit_note_info()
+
+            # Assertions - state should still be reverted even with objected status
+            self.assertEqual(
+                sol.bklg_state,
+                initial_state,
+                f"Backlog state should revert even with objected DTE status",
+            )
+
+            self._log_test_result(
+                test_name, True, "Objected credit note correctly reverted backlog state"
+            )
+
+        except AssertionError as e:
+            self._log_test_result(test_name, False, str(e))
+            raise
+
+    def test_partial_credit_note_keeps_invoiced_state(self):
+        """Test that partial credit note doesn't revert state (net amount still positive)"""
+        test_name = "Partial Credit Note Keeps Invoiced State"
+
+        try:
+            planning_stage = self.env.ref(
+                "kvz_backlog.block_stage_002", raise_if_not_found=False
+            )
+
+            # Create sale order with 2 lines
+            sale_order = self.env["sale.order"].create(
+                {
+                    "partner_id": self.partner.id,
+                    "order_line": [
+                        (
+                            0,
+                            0,
+                            {
+                                "product_id": self.product.id,
+                                "product_uom_qty": 2.0,  # 2 units
+                                "price_unit": 100.0,
+                                "qty_delivered": 2.0,
+                            },
+                        )
+                    ],
+                }
+            )
+
+            sale_order.action_confirm()
+            sol = sale_order.order_line[0]
+
+            if planning_stage:
+                sol.bklg_state = "planning"
+                sol.backlog_state_id = planning_stage
+
+            # Create and post invoice for full amount (200.0)
+            invoice = sale_order._create_invoices()
+            invoice.action_post()
+
+            if hasattr(invoice, "l10n_cl_dte_status"):
+                invoice.l10n_cl_dte_status = "accepted"
+
+            sol._compute_invoice_status()
+
+            # Verify invoiced
+            self.assertEqual(sol.bklg_state, "invoiced")
+            _logger.info(
+                f"After invoice: state={sol.bklg_state}, amount={sol.price_subtotal}"
+            )
+
+            # Create partial credit note for only 1 unit (100.0 out of 200.0)
+            # Manually create a partial refund
+            refund = self.env["account.move"].create(
+                {
+                    "move_type": "out_refund",
+                    "partner_id": self.partner.id,
+                    "invoice_line_ids": [
+                        (
+                            0,
+                            0,
+                            {
+                                "product_id": self.product.id,
+                                "quantity": 1.0,  # Only 1 unit
+                                "price_unit": 100.0,
+                                "sale_line_ids": [(4, sol.id)],
+                            },
+                        )
+                    ],
+                }
+            )
+            refund.action_post()
+
+            if hasattr(refund, "l10n_cl_dte_status"):
+                refund.l10n_cl_dte_status = "accepted"
+
+            _logger.info(f"Partial credit note created: {refund.name}")
+
+            # Trigger compute
+            sol._compute_invoice_status()
+            sol._compute_credit_note_info()
+
+            _logger.info(
+                f"After partial credit: state={sol.bklg_state}, "
+                f"has_credit_note={sol.has_credit_note}"
+            )
+
+            # Assertions - state should STAY 'invoiced' (net amount still > 0)
+            self.assertTrue(sol.has_credit_note)
+            self.assertEqual(
+                sol.bklg_state,
+                "invoiced",
+                "Backlog state should remain 'invoiced' after partial credit note "
+                "(net amount = 200 - 100 = 100 > 0)",
+            )
+
+            self._log_test_result(
+                test_name,
+                True,
+                "Partial credit note correctly keeps invoiced state (dynamic net amount check)",
+            )
+
+        except AssertionError as e:
+            self._log_test_result(test_name, False, str(e))
+            raise
+
+    def test_provisioned_line_reverts_to_provisioned(self):
+        """Test that provisioned lines revert to provisioned (not planning) after full credit"""
+        test_name = "Provisioned Line Reverts to Provisioned After Credit"
+
+        try:
+            provisioned_stage = self.env.ref(
+                "kvz_backlog.block_stage_005", raise_if_not_found=False
+            )
+
+            if not provisioned_stage:
+                self._log_test_result(
+                    test_name, True, "Skipped - provisioned stage not found"
+                )
+                return
+
+            # Create sale order
+            sale_order = self.env["sale.order"].create(
+                {
+                    "partner_id": self.partner.id,
+                    "order_line": [
+                        (
+                            0,
+                            0,
+                            {
+                                "product_id": self.product.id,
+                                "product_uom_qty": 1.0,
+                                "price_unit": 100.0,
+                                "qty_delivered": 1.0,
+                            },
+                        )
+                    ],
+                }
+            )
+
+            sale_order.action_confirm()
+            sol = sale_order.order_line[0]
+
+            # Set to provisioned state
+            sol.bklg_state = "provisioned"
+            sol.backlog_state_id = provisioned_stage
+            sol.initial_provisioned_amount = sol.price_subtotal
+            sol.initial_provisioned_amount_datetime = fields.Datetime.now()
+
+            # Create and post invoice
+            invoice = sale_order._create_invoices()
+            invoice.action_post()
+
+            if hasattr(invoice, "l10n_cl_dte_status"):
+                invoice.l10n_cl_dte_status = "accepted"
+
+            sol._compute_invoice_status()
+
+            # Should be invoiced now
+            self.assertEqual(sol.bklg_state, "invoiced")
+
+            # Create full credit note
+            refund_wizard = (
+                self.env["account.move.reversal"]
+                .with_context(active_model="account.move", active_ids=invoice.ids)
+                .create(
+                    {
+                        "reason": "Test full credit",
+                        "journal_id": invoice.journal_id.id,
+                    }
+                )
+            )
+
+            refund_action = refund_wizard.reverse_moves()
+            credit_note = self.env["account.move"].browse(refund_action["res_id"])
+            credit_note.action_post()
+
+            if hasattr(credit_note, "l10n_cl_dte_status"):
+                credit_note.l10n_cl_dte_status = "accepted"
+
+            # Trigger compute
+            sol._compute_invoice_status()
+            sol._compute_credit_note_info()
+
+            # Should revert to PROVISIONED (not planning)
+            self.assertEqual(
+                sol.bklg_state,
+                "provisioned",
+                "Provisioned line should revert to 'provisioned' after full credit note",
+            )
+
+            self.assertEqual(
+                sol.backlog_state_id.id,
+                provisioned_stage.id,
+                "Should revert to provisioned stage",
+            )
+
+            self._log_test_result(
+                test_name,
+                True,
+                "Provisioned line correctly reverted to provisioned (not planning)",
             )
 
         except AssertionError as e:

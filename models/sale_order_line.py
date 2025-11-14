@@ -204,17 +204,38 @@ class SaleOrderLine(models.Model):
                     f"Status={record.invoice_status}"
                 )
 
-    @api.depends("invoice_lines.move_id.state", "qty_to_invoice", "qty_invoiced")
+    @api.depends(
+        "invoice_lines.move_id.state",
+        "invoice_lines.move_id.move_type",
+        "invoice_lines.move_id.l10n_cl_dte_status",
+        "invoice_lines.price_subtotal",
+        "qty_to_invoice",
+        "qty_invoiced",
+    )
     def _compute_invoice_status(self):
         """
-        Override to automatically update backlog state when invoice_status changes.
-        Only updates when all related invoices are posted.
-        Uses direct assignment instead of write() to avoid recursion.
+        Override to automatically update backlog state based on invoice analysis.
+
+        Follows Odoo 17 standard pattern (like qty_invoiced):
+        - Computes state dynamically from net invoice amounts
+        - Credit notes automatically "revert" state by reducing net amount
+        - No stored "previous state" needed (idempotent computation)
+
+        State logic:
+        - net_amount > 0 + invoice_status='invoiced' → bklg_state='invoiced'
+        - net_amount == 0 (fully credited) → revert to 'provisioned' or 'planning'
+        - net_amount < 0 (over-credited) → handle edge case
         """
         super(SaleOrderLine, self)._compute_invoice_status()
 
         invoiced_stage = self.env.ref(
             "kvz_backlog.block_stage_006", raise_if_not_found=False
+        )
+        provisioned_stage = self.env.ref(
+            "kvz_backlog.block_stage_005", raise_if_not_found=False
+        )
+        planning_stage = self.env.ref(
+            "kvz_backlog.block_stage_002", raise_if_not_found=False
         )
 
         if not invoiced_stage:
@@ -222,27 +243,94 @@ class SaleOrderLine(models.Model):
             return
 
         for line in self:
-            # Check if invoice_status is invoiced AND all related invoices are posted
-            if line.invoice_status == "invoiced":
-                # Verify that all related invoices are actually posted
-                posted_invoices = line.invoice_lines.filtered(
-                    lambda ml: ml.move_id
-                    and ml.move_id.move_type in ["out_invoice", "out_refund"]
-                    and ml.move_id.state == "posted"
-                    and ml.move_id.l10n_cl_dte_status in ["objected", "accepted"]
-                )
+            # Skip if no backlog state field or no invoice lines
+            if not hasattr(line, "bklg_state") or not line.invoice_lines:
+                continue
 
-                # Only update backlog state if there are posted invoices
-                if posted_invoices:
-                    if hasattr(line, "bklg_state") and line.bklg_state != "invoiced":
-                        line.bklg_state = "invoiced"
+            # Get all posted invoice/refund lines with valid DTE status
+            # Following Chilean localization requirements
+            valid_invoice_lines = line.invoice_lines.filtered(
+                lambda ml: ml.move_id
+                and ml.move_id.state == "posted"
+                and ml.move_id.move_type in ["out_invoice", "out_refund"]
+                and ml.move_id.l10n_cl_dte_status in ["objected", "accepted"]
+            )
 
-                    if (
-                        hasattr(line, "backlog_state_id")
-                        and line.backlog_state_id.id != invoiced_stage.id
-                    ):
-                        line.backlog_state_id = invoiced_stage
+            if not valid_invoice_lines:
+                continue
 
+            # Calculate NET invoiced amount using sign multiplier pattern
+            # This is the standard Odoo 17 approach (see sale_subscription module)
+            amount_sign = {"out_invoice": 1, "out_refund": -1}
+            net_invoiced_amount = sum(
+                amount_sign.get(ml.move_id.move_type, 1) * ml.price_subtotal
+                for ml in valid_invoice_lines
+            )
+
+            _logger.debug(
+                f"Sale line {line.id}: net_invoiced_amount={net_invoiced_amount}, "
+                f"invoice_status={line.invoice_status}, "
+                f"current_bklg_state={line.bklg_state}"
+            )
+
+            # State computation based on net amount
+            currency = line.currency_id or line.order_id.currency_id
+
+            if line.invoice_status == "invoiced" and not currency.is_zero(
+                net_invoiced_amount
+            ):
+                # Fully invoiced with positive net amount → mark as invoiced
+                if line.bklg_state != "invoiced":
+                    line.bklg_state = "invoiced"
                     _logger.info(
-                        f"Sale line {line.id} backlog state updated to 'invoiced'"
+                        f"Sale line {line.id} marked as invoiced (net amount: {net_invoiced_amount})"
                     )
+
+                if (
+                    hasattr(line, "backlog_state_id")
+                    and line.backlog_state_id.id != invoiced_stage.id
+                ):
+                    line.backlog_state_id = invoiced_stage
+
+            elif currency.is_zero(net_invoiced_amount):
+                # Net amount is zero (fully credited) → revert state
+                # Determine revert target based on business logic
+
+                # If was previously provisioned, go back to provisioned
+                if line.initial_provisioned_amount_datetime and provisioned_stage:
+                    if line.bklg_state != "provisioned":
+                        line.bklg_state = "provisioned"
+                        line.backlog_state_id = provisioned_stage
+                        _logger.info(
+                            f"Sale line {line.id} reverted to provisioned (fully credited)"
+                        )
+
+                        # Log in chatter if available
+                        if hasattr(line, "message_post") and line.has_credit_note:
+                            line.message_post(
+                                body=f"<b>Backlog state automatically reverted to 'Provisioned' due to credit note.<br/>"
+                                f"Credit Note(s): {line.credit_note_number}</b>"
+                            )
+
+                # Otherwise, revert to planning
+                elif planning_stage and line.bklg_state == "invoiced":
+                    line.bklg_state = "planning"
+                    line.backlog_state_id = planning_stage
+                    _logger.info(
+                        f"Sale line {line.id} reverted to planning (fully credited)"
+                    )
+
+                    # Log in chatter
+                    if hasattr(line, "message_post") and line.has_credit_note:
+                        line.message_post(
+                            body=f"<b>Backlog state automatically reverted to 'Planning' due to credit note.<br/>"
+                            f"Credit Note(s): {line.credit_note_number}</b>"
+                        )
+
+            elif net_invoiced_amount < 0:
+                # Over-credited edge case (refund > invoice)
+                _logger.warning(
+                    f"Sale line {line.id} has negative net amount: {net_invoiced_amount}. "
+                    f"This indicates over-crediting."
+                )
+                # Could implement specific logic here if needed

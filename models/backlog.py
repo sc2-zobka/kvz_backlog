@@ -463,7 +463,8 @@ class kvz_backlog_lines(models.Model):
         for rec in self:
             rec.message_post(
                 body=Markup(
-                    f"Moved to Provisioned stage by <b><i>{self.env.user.name}</i></b>. Currency amounts frozen."
+                    _("Moved to Provisioned stage by <b><i>%s</i></b>.") 
+                    % self.env.user.name
                 )
             )
 
