@@ -11,12 +11,14 @@ _logger = logging.getLogger(__name__)
 class BacklogStages(models.Model):
     _name = "backlog.stages"
     _description = "Back Log Stages"
+    _order = "sequence asc"
 
     sequence = fields.Integer(default=50)
     name = fields.Char(required=True, translate=True)
     stages_type = fields.Selection(
         [
             ("forecast", "Forecast"),
+            ("to_be_planned", "To be Planned"),
             ("planning", " Planning"),
             ("provisioned", "Provisioned"),
             ("invoiced", "Invoiced"),
@@ -32,6 +34,7 @@ class BacklogStages(models.Model):
         )
         stages_dict = {
             "forecast": "Forecast",
+            "to_be_planned": "To be Planned",
             "planning": "Planning",
             "provisioned": "Provisioned",
             "invoiced": "Invoiced",
@@ -133,6 +136,7 @@ class backlog_lines(models.Model):
     def _get_bklg_state_list(self):
         base_list = [
             ("forecast", "Forecast"),
+            ("to_be_planned", "To be Planned"),
             ("planning", " Planning"),
             ("high_risk", "High Risk"),
             ("pending_risk", "Pending Risk"),
@@ -171,12 +175,36 @@ class backlog_lines(models.Model):
     date_deadline = fields.Date("Deadline Date", copy=False)
     is_required_date = fields.Boolean("Is Required Date")
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        lines = super(backlog_lines, self).create(vals_list)
+        to_be_planned_stage = self.env["backlog.stages"].search(
+            [("stages_type", "=", "to_be_planned")], limit=1
+        )
+
+        for line in lines:
+            # Check if the parent order is confirmed
+            if line.order_id and line.order_id.state == "sale" and not line.backlog_state_id:
+                update_vals = {
+                    "backlog_state_id": to_be_planned_stage.id if to_be_planned_stage else False,
+                    "bklg_state": "to_be_planned",
+                    "date_deadline": False,
+                }
+                super(backlog_lines, line).write(update_vals)
+
+                body = Markup(
+                    "<b>Auto-assigned to 'To Be Planned' state by {} (new line added to confirmed order).<br/></b>"
+                ).format(self.env.user.name)
+                line.message_post(body=body)
+
+        return lines
+
     def compute_get_users(self):
         for rec in self:
             if not rec.bklg_state:
                 if rec.project_manager and rec.project_manager.id == self.env.uid:
                     rec.current_user_id = True
-                elif rec.stages_type == "planning":
+                elif rec.stages_type in ("to_be_planned", "planning"):
                     rec.current_user_id = False
                 else:
                     rec.current_user_id = False
@@ -233,7 +261,9 @@ class backlog_lines(models.Model):
         if vals.get("date_deadline"):
             if self.is_required_date or vals.get("is_required_date"):
                 vals.update({"is_required_date": False})
-            body = f"<b>Date Deadline :- {vals.get('date_deadline')} <br/> Re-Change Deadline Date by {self.env.user.name}.<br/></b>"
+            body = Markup(
+                "<b>Date Deadline :- {} <br/> Re-Change Deadline Date by {}.<br/></b>"
+            ).format(vals.get("date_deadline"), self.env.user.name)
             self.message_post(body=body)
         if vals.get("bklg_state") and vals.get("date_deadline"):
             new_date = datetime.strptime(vals.get("date_deadline"), "%Y-%m-%d").date()
@@ -281,7 +311,9 @@ class backlog_lines(models.Model):
                 }
                 self.env["mail.activity"].create(activity_vals)
             self.message_post(
-                body=f"<b> Sent to Invoicing by {self.env.user.name}.<br/></b>"
+                body=Markup("<b> Sent to Invoicing by {}.<br/></b>").format(
+                    self.env.user.name
+                )
             )
         return super(backlog_lines, self).write(vals)
 
@@ -316,7 +348,9 @@ class backlog_lines(models.Model):
                     "backlog_state_id": False,
                 }
             )
-            body = f"<b>Date  :- {date.today()} <br/> has been made clear all(using Unforecast button) by {self.env.user.name}.<br/></b>"
+            body = Markup(
+                "<b>Date  :- {} <br/> has been made clear all(using Unforecast button) by {}.<br/></b>"
+            ).format(date.today(), self.env.user.name)
             rec.message_post(body=body)
         # refresh the current view
         return {
@@ -326,7 +360,7 @@ class backlog_lines(models.Model):
 
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
-        return self.env["backlog.stages"].search([])
+        return self.env["backlog.stages"].search([], order="sequence")
 
     # Compute on Nivel Riesgo
     @api.depends(

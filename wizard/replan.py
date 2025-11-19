@@ -1,5 +1,6 @@
 
 from odoo import models, fields, api, _
+from markupsafe import Markup
 
 class ReplanWizard(models.TransientModel):
 	_name = 'replan.wizard'
@@ -12,5 +13,5 @@ class ReplanWizard(models.TransientModel):
 		order_line = self.env['sale.order.line'].browse(active_id)
 		order_line.date_deadline = self.date
 		order_line.replanning_count = order_line.replanning_count + 1
-		body = f"<b>Date :- {self.date} <br/>The replanning count will be changed by {self.env.user.name}.<br/>This count number {order_line.replanning_count}.</b>"
+		body = Markup("<b>Date :- {} <br/>The replanning count will be changed by {}.<br/>This count number {}.</b>").format(self.date, self.env.user.name, order_line.replanning_count)
 		order_line.message_post(body=body)

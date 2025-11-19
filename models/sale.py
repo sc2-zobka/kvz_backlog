@@ -51,10 +51,10 @@ class SaleOrde(models.Model):
     def action_confirm(self):
         res = super().action_confirm()
         backlog_state_id = self.env["backlog.stages"].search(
-            [("stages_type", "=", "planning")]
+            [("stages_type", "=", "to_be_planned")]
         )
         for line in self.order_line:
-            line.bklg_state = "planning"
+            line.bklg_state = "to_be_planned"
             line.backlog_state_id = backlog_state_id.id if backlog_state_id else False
             line.date_deadline = False
         return res

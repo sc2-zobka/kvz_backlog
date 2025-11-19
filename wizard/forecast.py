@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from markupsafe import Markup
 
 
 class ForecastWizard(models.TransientModel):
@@ -86,5 +87,7 @@ class ForecastWizard(models.TransientModel):
                     }
                 )
                 self.env["mail.activity"].create(vals)
-            body = f"<b> Sent to Provision by {self.env.user.name}.<br/></b>"
+            body = Markup("<b> Sent to Provision by {}.<br/></b>").format(
+                self.env.user.name
+            )
             order_line.message_post(body=body)

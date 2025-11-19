@@ -81,7 +81,7 @@
 								<!-- <div class="o_kanban_record_bottom">
 										<div class="oe_kanban_bottom_left text-muted">
 											<p style="font-size: 11px;margin-bottom: 0rem;">
-												
+
 											</p>
 										</div>
 									</div> -->
@@ -106,7 +106,7 @@
 							class="oe_highlight"
 							context="{'button':'forecast'}"
 							groups="sales_team.group_sale_manager,sales_team.group_sale_salesman_all_leads,backlog.group_head_of_sales,backlog.group_business_owner"
-							invisible="stages_type in ('forecast', 'planning', 'provisioned', 'invoiced')"
+							invisible="stages_type in ('forecast', 'to_be_planned', 'planning', 'provisioned', 'invoiced')"
 						/>
 						<button
 							name="action_unforecast"
@@ -135,13 +135,13 @@
 							invisible="stages_type != 'planning'"
 						/>
 						<!-- <button
-								name="action_invoice"
-								string="Invoice"
-								type="object"
-								class="oe_highlight"
+							name="action_invoice"
+							string="Invoice"
+							type="object"
+							class="oe_highlight"
 							groups="backlog.group_backlog_manager,account.group_account_invoice,account.group_account_manager,account.group_account_user"
-								invisible="stages_type not in ('planning','provisioned')"
-							/> -->
+							invisible="stages_type not in ('planning','provisioned')"
+						/> -->
 						<button
 							name="action_reverse_provision"
 							string="Reverse"
@@ -287,7 +287,7 @@
 					<field name="qty_invoiced" invisible="1" />
 					<field name="discount" invisible="1" />
 					<!---
-					Revisar este campo en la migración 
+					Revisar este campo en la migración
 				<field name="qty_delivered_manual" invisible="1"/>
 				-->
 					<field name="planning_hours_planned" invisible="1" />
@@ -298,7 +298,7 @@
 					<field name="price_reduce_taxexcl" invisible="1" />
 					<field name="price_unit" invisible="1" />
 					<!---
-					Revisar este campo en la migración 
+					Revisar este campo en la migración
 				<field name="price_reduce" invisible="1"/>
 				-->
 					<field name="replanning_count" invisible="1" />

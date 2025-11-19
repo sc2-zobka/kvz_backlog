@@ -2,42 +2,36 @@
 <odoo>
     <data>
 
-    <!-- === Block Stages ===  -->
-    <record id="block_stage_001" model="backlog.stages">
-        <field name="sequence">0</field>  
-        <field name="name">Forecast</field>
-        <field name="stages_type">forecast</field>
-    </record>
+        <!-- === Block Stages ===  -->
+        <record id="block_stage_001" model="backlog.stages">
+            <field name="sequence">0</field>
+            <field name="name">Forecast</field>
+            <field name="stages_type">forecast</field>
+        </record>
 
-    <record id="block_stage_002" model="backlog.stages">
-        <field name="sequence">1</field>  
-        <field name="name">Planning</field>
-        <field name="stages_type">planning</field>
-    </record>
-<!-- 
-    <record id="block_stage_003" model="backlog.stages">
-        <field name="sequence">2</field>  
-        <field name="name">Sent to Invoicing</field>
-        <field name="stages_type">sent_to_invoicing</field>
-    </record> -->
+        <record id="block_stage_007" model="backlog.stages">
+            <field name="sequence">1</field>
+            <field name="name">To be Planned</field>
+            <field name="stages_type">to_be_planned</field>
+        </record>
 
-    <!-- <record id="block_stage_004" model="backlog.stages">
-        <field name="sequence">3</field>  
-        <field name="name">Sent to Provision</field>
-        <field name="stages_type">sent_to_provision</field>
-    </record> -->
+        <record id="block_stage_002" model="backlog.stages">
+            <field name="sequence">2</field>
+            <field name="name">Planning</field>
+            <field name="stages_type">planning</field>
+        </record>
 
-    <record id="block_stage_005" model="backlog.stages">
-        <field name="sequence">4</field>  
-        <field name="name">Provisioned</field>
-        <field name="stages_type">provisioned</field>
-    </record>
+        <record id="block_stage_005" model="backlog.stages">
+            <field name="sequence">4</field>
+            <field name="name">Provisioned</field>
+            <field name="stages_type">provisioned</field>
+        </record>
 
-    <record id="block_stage_006" model="backlog.stages">
-        <field name="sequence">5</field>  
-        <field name="name">Invoiced</field>
-        <field name="stages_type">invoiced</field>
-    </record>
+        <record id="block_stage_006" model="backlog.stages">
+            <field name="sequence">5</field>
+            <field name="name">Invoiced</field>
+            <field name="stages_type">invoiced</field>
+        </record>
 
     </data>
 </odoo>
