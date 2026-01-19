@@ -54,7 +54,7 @@ class MailActivityType(models.Model):
     is_todo = fields.Boolean("Is To Do")
 
 
-class kvz_backlog_lines(models.Model):
+class backlog_lines(models.Model):
     _name = "sale.order.line"
     _inherit = ["sale.order.line", "mail.activity.mixin", "mail.thread", "utm.mixin"]
 
@@ -143,8 +143,8 @@ class kvz_backlog_lines(models.Model):
             ("frozen", "Frozen"),
         ]
         if self.env.user.has_group(
-            "kvz_backlog.group_project_manager"
-        ) and not self.env.user.has_group("kvz_backlog.group_backlog_users"):
+            "backlog.group_project_manager"
+        ) and not self.env.user.has_group("backlog.group_backlog_users"):
             base_list.remove(("forecast", "Forecast"))
             base_list.remove(("sent_to_provision", "Sent to Provision"))
             base_list.remove(("provisioned", "Provisioned"))
@@ -264,7 +264,7 @@ class kvz_backlog_lines(models.Model):
             )
 
             # send activity to backlog manager group
-            user_ids = self.env.ref("kvz_backlog.group_backlog_manager").users.ids
+            user_ids = self.env.ref("backlog.group_backlog_manager").users.ids
             user_id = user_ids[0] if user_ids else False
 
             if activity_type_id and user_id:
@@ -283,17 +283,17 @@ class kvz_backlog_lines(models.Model):
             self.message_post(
                 body=f"<b> Sent to Invoicing by {self.env.user.name}.<br/></b>"
             )
-        return super(kvz_backlog_lines, self).write(vals)
+        return super(backlog_lines, self).write(vals)
 
     @api.constrains("bklg_state", "backlog_state_id", "state")
     def _check_validate_status(self):
         for rec in self:
             user = self.env.user
             if (
-                not user.has_group("kvz_backlog.group_head_of_sales")
-                and not user.has_group("kvz_backlog.group_business_owner")
+                not user.has_group("backlog.group_head_of_sales")
+                and not user.has_group("backlog.group_business_owner")
                 and rec.project_manager.id != user.id
-                and not user.has_group("kvz_backlog.group_project_manager")
+                and not user.has_group("backlog.group_project_manager")
                 and rec.order_id.user_id.id != user.id
             ):
                 if rec.state in ["draft", "sent"] and (
@@ -421,7 +421,6 @@ class kvz_backlog_lines(models.Model):
                     round=False,  # Odoo 17 parameter for precise conversion
                 )
             else:
-                
                 rec.amount_us = rec.currency_id._convert(
                     rec.price_subtotal,
                     usd,
@@ -451,7 +450,7 @@ class kvz_backlog_lines(models.Model):
         if not stage_provisioned:
             _logger.warning("Etapa 'Provisionado' no encontrada.")
             return
-        
+
         self.sudo().write(
             {
                 "income_recognition_date": fields.Date.context_today(self),
@@ -463,7 +462,7 @@ class kvz_backlog_lines(models.Model):
         for rec in self:
             rec.message_post(
                 body=Markup(
-                    _("Moved to Provisioned stage by <b><i>%s</i></b>.") 
+                    _("Moved to Provisioned stage by <b><i>%s</i></b>.")
                     % self.env.user.name
                 )
             )
@@ -504,7 +503,7 @@ class kvz_backlog_lines(models.Model):
     def fields_view_get(
         self, view_id=None, view_type=None, toolbar=False, submenu=False
     ):
-        res = super(kvz_backlog_lines, self).fields_view_get(
+        res = super(backlog_lines, self).fields_view_get(
             view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu
         )
         if view_type == "form" and self._context.get("params"):

@@ -40,7 +40,7 @@ class TestInvoiceStatus(TransactionCase):
 
         # Get invoiced stage
         self.invoiced_stage = self.env.ref(
-            "kvz_backlog.block_stage_006", raise_if_not_found=False
+            "backlog.block_stage_006", raise_if_not_found=False
         )
 
     def _log_test_result(self, test_name, passed, message=""):
@@ -112,7 +112,7 @@ class TestInvoiceStatus(TransactionCase):
             # Get the module path from Odoo's module registry
             import odoo.modules as addons
 
-            module_path = addons.get_module_path("kvz_backlog")
+            module_path = addons.get_module_path("backlog")
         except Exception:
             # Fallback to __file__ if module path resolution fails
             module_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -414,7 +414,7 @@ class TestInvoiceStatus(TransactionCase):
         try:
             # Get planning stage for initial state
             planning_stage = self.env.ref(
-                "kvz_backlog.block_stage_002", raise_if_not_found=False
+                "backlog.block_stage_002", raise_if_not_found=False
             )
 
             # Create a sale order
@@ -545,7 +545,7 @@ class TestInvoiceStatus(TransactionCase):
         try:
             # Get planning stage for initial state
             planning_stage = self.env.ref(
-                "kvz_backlog.block_stage_002", raise_if_not_found=False
+                "backlog.block_stage_002", raise_if_not_found=False
             )
 
             # Create a sale order
@@ -636,7 +636,7 @@ class TestInvoiceStatus(TransactionCase):
 
         try:
             planning_stage = self.env.ref(
-                "kvz_backlog.block_stage_002", raise_if_not_found=False
+                "backlog.block_stage_002", raise_if_not_found=False
             )
 
             # Create sale order with 2 lines
@@ -741,7 +741,7 @@ class TestInvoiceStatus(TransactionCase):
 
         try:
             provisioned_stage = self.env.ref(
-                "kvz_backlog.block_stage_005", raise_if_not_found=False
+                "backlog.block_stage_005", raise_if_not_found=False
             )
 
             if not provisioned_stage:

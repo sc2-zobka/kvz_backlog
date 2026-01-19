@@ -1,6 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_backlog_manage,backlog.manage.user,model_backlog_manage,,1,1,1,1
-access_backlog_stages_manager,backlog.stages.user,model_backlog_stages,kvz_backlog.group_backlog_manager,1,1,1,1
+access_backlog_stages_manager,backlog.stages.user,model_backlog_stages,backlog.group_backlog_manager,1,1,1,1
 access_backlog_stages_user,backlog.stages.user,model_backlog_stages,group_backlog_users,1,0,0,0
 access_forecast_wizard,forecast.wizard,model_forecast_wizard,,1,1,1,1
 access_replan_wizard,replan.wizard,model_replan_wizard,,1,1,1,1

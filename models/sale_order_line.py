@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
-import logging 
+import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -81,7 +81,7 @@ class SaleOrderLine(models.Model):
         """Compute initial provisioned amount and datetime (one-time snapshot)"""
 
         provisioned_stage = self.env.ref(
-            "kvz_backlog.block_stage_005", raise_if_not_found=False
+            "backlog.block_stage_005", raise_if_not_found=False
         )
 
         if not provisioned_stage:
@@ -229,13 +229,13 @@ class SaleOrderLine(models.Model):
         super(SaleOrderLine, self)._compute_invoice_status()
 
         invoiced_stage = self.env.ref(
-            "kvz_backlog.block_stage_006", raise_if_not_found=False
+            "backlog.block_stage_006", raise_if_not_found=False
         )
         provisioned_stage = self.env.ref(
-            "kvz_backlog.block_stage_005", raise_if_not_found=False
+            "backlog.block_stage_005", raise_if_not_found=False
         )
         planning_stage = self.env.ref(
-            "kvz_backlog.block_stage_002", raise_if_not_found=False
+            "backlog.block_stage_002", raise_if_not_found=False
         )
 
         if not invoiced_stage:
