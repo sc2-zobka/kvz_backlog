@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 
 class BacklogStages(models.Model):
-    _name = "backlog.stages"
+    _name = "kvz_backlog.stages"
     _description = "Back Log Stages"
     _order = "sequence asc"
 
@@ -47,7 +47,7 @@ class BacklogStages(models.Model):
 
 
 class BacklogManage(models.Model):
-    _name = "backlog.manage"
+    _name = "kvz_backlog.manage"
     _description = "Back Log Manage"
 
 
@@ -94,7 +94,7 @@ class backlog_lines(models.Model):
         related="order_id.project_id", store=True, string="Project", check_company=True
     )
     backlog_state_id = fields.Many2one(
-        "backlog.stages",
+        "kvz_backlog.stages",
         string="Stage",
         required=False,
         readonly=False,
@@ -147,8 +147,8 @@ class backlog_lines(models.Model):
             ("frozen", "Frozen"),
         ]
         if self.env.user.has_group(
-            "backlog.group_project_manager"
-        ) and not self.env.user.has_group("backlog.group_backlog_users"):
+            "kvz_backlog.group_project_manager"
+        ) and not self.env.user.has_group("kvz_backlog.group_backlog_users"):
             base_list.remove(("forecast", "Forecast"))
             base_list.remove(("sent_to_provision", "Sent to Provision"))
             base_list.remove(("provisioned", "Provisioned"))
@@ -163,7 +163,6 @@ class backlog_lines(models.Model):
     cpl_currency_id = fields.Many2one(
         "res.currency", string="Currency", default=get_currency_id
     )
-    income_recognition_date = fields.Date("Recognition Date")
     replanning_count = fields.Integer("Replanning Count", default=0, readonly=True)
     amount_us = fields.Float(
         string="Subtotal USD", compute="_compute_amount_us", store=True
@@ -178,7 +177,7 @@ class backlog_lines(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         lines = super(backlog_lines, self).create(vals_list)
-        to_be_planned_stage = self.env["backlog.stages"].search(
+        to_be_planned_stage = self.env["kvz_backlog.stages"].search(
             [("stages_type", "=", "to_be_planned")], limit=1
         )
 
@@ -294,7 +293,7 @@ class backlog_lines(models.Model):
             )
 
             # send activity to backlog manager group
-            user_ids = self.env.ref("backlog.group_backlog_manager").users.ids
+            user_ids = self.env.ref("kvz_backlog.group_backlog_manager").users.ids
             user_id = user_ids[0] if user_ids else False
 
             if activity_type_id and user_id:
@@ -322,10 +321,10 @@ class backlog_lines(models.Model):
         for rec in self:
             user = self.env.user
             if (
-                not user.has_group("backlog.group_head_of_sales")
-                and not user.has_group("backlog.group_business_owner")
+                not user.has_group("kvz_backlog.group_head_of_sales")
+                and not user.has_group("kvz_backlog.group_business_owner")
                 and rec.project_manager.id != user.id
-                and not user.has_group("backlog.group_project_manager")
+                and not user.has_group("kvz_backlog.group_project_manager")
                 and rec.order_id.user_id.id != user.id
             ):
                 if rec.state in ["draft", "sent"] and (
@@ -360,7 +359,7 @@ class backlog_lines(models.Model):
 
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
-        return self.env["backlog.stages"].search([], order="sequence")
+        return self.env["kvz_backlog.stages"].search([], order="sequence")
 
     # Compute on Nivel Riesgo
     @api.depends(
@@ -463,13 +462,13 @@ class backlog_lines(models.Model):
                 )
 
     def action_invoice(self):
-        stage_invoiced = self.env["backlog.stages"].search(
+        stage_invoiced = self.env["kvz_backlog.stages"].search(
             [("stages_type", "=", "invoiced")], limit=1
         )
         for rec in self:
             rec.sudo().write(
                 {
-                    "income_recognition_date": fields.Date.context_today(self),
+                    # income_recognition_date is now computed automatically
                     "backlog_state_id": stage_invoiced.id if stage_invoiced else False,
                     "bklg_state": "invoiced",
                 }
@@ -477,7 +476,7 @@ class backlog_lines(models.Model):
 
     def action_provision(self):
         """Mark lines as provisioned and freeze currency amounts"""
-        stage_provisioned = self.env["backlog.stages"].search(
+        stage_provisioned = self.env["kvz_backlog.stages"].search(
             [("stages_type", "=", "provisioned")], limit=1
         )
 
@@ -487,7 +486,7 @@ class backlog_lines(models.Model):
 
         self.sudo().write(
             {
-                "income_recognition_date": fields.Date.context_today(self),
+                # income_recognition_date is now computed automatically
                 "backlog_state_id": stage_provisioned.id,
                 "bklg_state": "provisioned",
             }
@@ -503,7 +502,7 @@ class backlog_lines(models.Model):
 
     def action_reverse_provision(self):
         """Reverse provision and force recalculation of currency amounts"""
-        stage_planning = self.env["backlog.stages"].search(
+        stage_planning = self.env["kvz_backlog.stages"].search(
             [("stages_type", "=", "planning")], limit=1
         )
 
@@ -514,7 +513,7 @@ class backlog_lines(models.Model):
         # First update the state to trigger recomputation
         self.sudo().write(
             {
-                "income_recognition_date": False,
+                # income_recognition_date is now computed automatically
                 "backlog_state_id": stage_planning.id,
                 "bklg_state": "planning",
                 "initial_provisioned_amount": 0.0,

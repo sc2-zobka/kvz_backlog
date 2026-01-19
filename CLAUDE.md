@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Module Overview
 
-The `backlog` module is an Odoo 17 custom addon that manages confirmed sales order lines through a backlog workflow. It tracks invoiceable lines from sales orders through stages: forecast → planning → provisioned → invoiced, with currency conversion support (CLP/USD) and Chilean DTE integration.
+The `kvz_backlog` module is an Odoo 17 custom addon that manages confirmed sales order lines through a backlog workflow. It tracks invoiceable lines from sales orders through stages: forecast → planning → provisioned → invoiced, with currency conversion support (CLP/USD) and Chilean DTE integration.
 
 ## Docker Environment
 
@@ -16,17 +16,17 @@ The `backlog` module is an Odoo 17 custom addon that manages confirmed sales ord
 
 **Run Odoo tests for this module:**
 ```bash
-docker exec -it odoo-17 odoo-bin -d NEW_BACKLOG -u backlog --test-enable --test-tags=backlog --stop-after-init
+docker exec -it odoo-17 odoo-bin -d NEW_BACKLOG -u kvz_backlog --test-enable --test-tags=kvz_backlog --stop-after-init
 ```
 
 **Run specific test file:**
 ```bash
-docker exec -it odoo-17 odoo-bin -d NEW_BACKLOG -u backlog --test-enable --test-tags=/backlog/tests/test_invoice_status.py --stop-after-init
+docker exec -it odoo-17 odoo-bin -d NEW_BACKLOG -u kvz_backlog --test-enable --test-tags=/backlog/tests/test_invoice_status.py --stop-after-init
 ```
 
 **Update module after code changes:**
 ```bash
-docker exec -it odoo-17 odoo-bin -d NEW_BACKLOG -u backlog --stop-after-init
+docker exec -it odoo-17 odoo-bin -d NEW_BACKLOG -u kvz_backlog --stop-after-init
 ```
 
 **Start Odoo shell for debugging:**

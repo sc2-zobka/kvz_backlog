@@ -76,12 +76,29 @@ class SaleOrderLine(models.Model):
         store=True,
     )
 
+    income_recognition_date = fields.Date(
+        string="Recognition Date",
+        compute="_compute_income_recognition_date",
+        store=True,
+        readonly=True,
+        help="Fecha de reconocimiento de ingresos. Se establece inicialmente en date_deadline, "
+        "luego se actualiza con la fecha más temprana entre invoice_date y initial_provisioned_amount_datetime.",
+    )
+
+    invoice_line_date = fields.Date(
+        string="Invoice Date",
+        compute="_compute_invoice_line_date",
+        store=True,
+        readonly=True,
+        help="Fecha de la factura relacionada. Solo se muestra para facturas aceptadas u objetadas.",
+    )
+
     @api.depends("backlog_state_id", "price_subtotal")
     def _compute_initial_provisioned_amount(self):
         """Compute initial provisioned amount and datetime (one-time snapshot)"""
 
         provisioned_stage = self.env.ref(
-            "backlog.block_stage_005", raise_if_not_found=False
+            "kvz_backlog.block_stage_005", raise_if_not_found=False
         )
 
         if not provisioned_stage:
@@ -95,6 +112,82 @@ class SaleOrderLine(models.Model):
             if record.backlog_state_id.id == provisioned_stage.id:
                 record.initial_provisioned_amount = record.price_subtotal or 0.0
                 record.initial_provisioned_amount_datetime = fields.Datetime.now()
+
+    @api.depends(
+        "date_deadline",
+        "invoice_lines.move_id.invoice_date",
+        "initial_provisioned_amount_datetime",
+    )
+    def _compute_income_recognition_date(self):
+        """
+        Compute income recognition date with the following logic:
+        1. Initially set to date_deadline
+        2. After initialization, use the earliest date between:
+           - invoice_date from related invoice
+           - date part of initial_provisioned_amount_datetime
+        3. If only one exists, use that one
+        4. If neither exists, keep date_deadline
+        """
+        for record in self:
+            # Start with date_deadline as the default
+            recognition_date = record.date_deadline
+
+            # Get invoice date if available (from posted invoices)
+            invoice_date = None
+            if record.invoice_lines:
+                posted_invoices = record.invoice_lines.filtered(
+                    lambda ml: ml.move_id
+                    and ml.move_id.state == "posted"
+                    and ml.move_id.move_type == "out_invoice"
+                    and ml.move_id.l10n_cl_dte_status in ["objected", "accepted"]
+                )
+                if posted_invoices:
+                    # Get the earliest invoice date
+                    invoice_dates = posted_invoices.mapped("move_id.invoice_date")
+                    invoice_date = min(invoice_dates) if invoice_dates else None
+
+            # Get provision date if available (extract date from datetime)
+            provision_date = None
+            if record.initial_provisioned_amount_datetime:
+                provision_date = record.initial_provisioned_amount_datetime.date()
+
+            # Determine the income recognition date
+            available_dates = []
+            if invoice_date:
+                available_dates.append(invoice_date)
+            if provision_date:
+                available_dates.append(provision_date)
+
+            if available_dates:
+                # Use the earliest of the available dates
+                recognition_date = min(available_dates)
+
+            record.income_recognition_date = recognition_date
+
+    @api.depends(
+        "invoice_lines.move_id.invoice_date",
+        "invoice_lines.move_id.state",
+        "invoice_lines.move_id.l10n_cl_dte_status",
+    )
+    def _compute_invoice_line_date(self):
+        """
+        Compute invoice date from posted invoice with valid DTE status.
+        Only shows date when an actual invoice exists (posted + accepted/objected).
+        """
+        for line in self:
+            # Filter for posted invoices with valid DTE status
+            posted_invoices = line.invoice_lines.filtered(
+                lambda ml: ml.move_id
+                and ml.move_id.move_type == "out_invoice"
+                and ml.move_id.state == "posted"
+                and ml.move_id.l10n_cl_dte_status in ["objected", "accepted"]
+            )
+            if posted_invoices:
+                # Get the earliest invoice date (if multiple invoices)
+                invoice_dates = posted_invoices.mapped("move_id.invoice_date")
+                line.invoice_line_date = min(invoice_dates) if invoice_dates else False
+            else:
+                line.invoice_line_date = False
 
     @api.depends("invoice_lines.move_id.name")
     def _compute_invoice_number(self):
@@ -229,13 +322,13 @@ class SaleOrderLine(models.Model):
         super(SaleOrderLine, self)._compute_invoice_status()
 
         invoiced_stage = self.env.ref(
-            "backlog.block_stage_006", raise_if_not_found=False
+            "kvz_backlog.block_stage_006", raise_if_not_found=False
         )
         provisioned_stage = self.env.ref(
-            "backlog.block_stage_005", raise_if_not_found=False
+            "kvz_backlog.block_stage_005", raise_if_not_found=False
         )
         planning_stage = self.env.ref(
-            "backlog.block_stage_002", raise_if_not_found=False
+            "kvz_backlog.block_stage_002", raise_if_not_found=False
         )
 
         if not invoiced_stage:
@@ -333,4 +426,3 @@ class SaleOrderLine(models.Model):
                     f"Sale line {line.id} has negative net amount: {net_invoiced_amount}. "
                     f"This indicates over-crediting."
                 )
-                # Could implement specific logic here if needed

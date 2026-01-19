@@ -1,5 +1,5 @@
 {
-    "name": "backlog",
+    "name": "kvz_backlog",
     "summary": """
         Allows to manage each confirmed sales order invoiceable line in a backlog manager""",
     "description": """

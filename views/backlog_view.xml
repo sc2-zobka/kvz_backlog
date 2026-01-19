@@ -100,12 +100,12 @@
 				<form string="Gestion Backlog Kuvasz" delete="0" duplicate="0">
 					<header>
 						<button
-							name="%(backlog.action_forecast_wizard)d"
+							name="%(kvz_backlog.action_forecast_wizard)d"
 							string="Forecast"
 							type="action"
 							class="oe_highlight"
 							context="{'button':'forecast'}"
-							groups="sales_team.group_sale_manager,sales_team.group_sale_salesman_all_leads,backlog.group_head_of_sales,backlog.group_business_owner"
+							groups="sales_team.group_sale_manager,sales_team.group_sale_salesman_all_leads,kvz_backlog.group_head_of_sales,kvz_backlog.group_business_owner"
 							invisible="stages_type in ('forecast', 'to_be_planned', 'planning', 'provisioned', 'invoiced')"
 						/>
 						<button
@@ -114,16 +114,16 @@
 							type="object"
 							class="oe_highlight"
 							context="{'button':'Unforecast'}"
-							groups="sales_team.group_sale_manager,sales_team.group_sale_salesman_all_leads,backlog.group_head_of_sales"
+							groups="sales_team.group_sale_manager,sales_team.group_sale_salesman_all_leads,kvz_backlog.group_head_of_sales"
 							invisible="stages_type != 'forecast'"
 						/>
 						<button
-							name="%(backlog.action_forecast_wizard)d"
+							name="%(kvz_backlog.action_forecast_wizard)d"
 							string="Send to Provision"
 							type="action"
 							context="{'button':'send_provisioning'}"
 							class="oe_highlight"
-							groups="backlog.group_business_owner,backlog.group_head_of_sales"
+							groups="kvz_backlog.group_business_owner,kvz_backlog.group_head_of_sales"
 							invisible="stages_type != 'planning' or bklg_state in ('sent_to_provision', 'sent_to_invoicing')"
 						/>
 						<button
@@ -131,7 +131,7 @@
 							string="Provision"
 							type="object"
 							class="oe_highlight"
-							groups="backlog.group_backlog_manager,account.group_account_invoice,account.group_account_manager,account.group_account_user"
+							groups="kvz_backlog.group_backlog_manager,account.group_account_invoice,account.group_account_manager,account.group_account_user"
 							invisible="stages_type != 'planning'"
 						/>
 						<!-- <button
@@ -139,7 +139,7 @@
 							string="Invoice"
 							type="object"
 							class="oe_highlight"
-							groups="backlog.group_backlog_manager,account.group_account_invoice,account.group_account_manager,account.group_account_user"
+							groups="kvz_backlog.group_backlog_manager,account.group_account_invoice,account.group_account_manager,account.group_account_user"
 							invisible="stages_type not in ('planning','provisioned')"
 						/> -->
 						<button
@@ -147,7 +147,7 @@
 							string="Reverse"
 							type="object"
 							class="btn-primary"
-							groups="backlog.group_backlog_manager,account.group_account_invoice,account.group_account_manager,account.group_account_user"
+							groups="kvz_backlog.group_backlog_manager,account.group_account_invoice,account.group_account_manager,account.group_account_user"
 							invisible="stages_type not in ('provisioned','invoiced')"
 						/>
 						<field name="backlog_state_id" widget="statusbar" clickable="True" />
@@ -311,7 +311,7 @@
 		</record>
 
 		<!-- actions opening views on models -->
-		<record model="ir.actions.act_window" id="backlog.action_window">
+		<record model="ir.actions.act_window" id="kvz_backlog.action_window">
 			<field name="name">Gestion Backlog Kuvasz</field>
 			<field name="res_model">sale.order.line</field>
 			<field name="view_mode">tree,kanban,form,graph</field>

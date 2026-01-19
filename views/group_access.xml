@@ -3,7 +3,7 @@
 	<record id="form_sale_order_line_view_inherit_access" model="ir.ui.view">
 		<field name="name">sale.order.line.form.inherit</field>
 		<field name="model">sale.order.line</field>
-		<field name="inherit_id" ref="backlog.form_sale_order_line_view" />
+		<field name="inherit_id" ref="kvz_backlog.form_sale_order_line_view" />
 		<field name="arch" type="xml">
 			<form position="attributes">
 				<attribute name="create">0</attribute>
@@ -14,7 +14,7 @@
 	<record id="kanban_sale_order_line_view_inherit_access" model="ir.ui.view">
 		<field name="name">sale.order.line.form.inherit</field>
 		<field name="model">sale.order.line</field>
-		<field name="inherit_id" ref="backlog.kanban_sale_order_line_view" />
+		<field name="inherit_id" ref="kvz_backlog.kanban_sale_order_line_view" />
 		<field name="arch" type="xml">
 			<kanban position="attributes">
 				<attribute name="create">0</attribute>
@@ -25,7 +25,7 @@
 	<record id="backlog_list_inherit_access" model="ir.ui.view">
 		<field name="name">sale.order.line.form.inherit</field>
 		<field name="model">sale.order.line</field>
-		<field name="inherit_id" ref="backlog.backlog_list" />
+		<field name="inherit_id" ref="kvz_backlog.backlog_list" />
 		<field name="arch" type="xml">
 			<tree position="attributes">
 				<attribute name="create">0</attribute>

@@ -101,7 +101,7 @@ msgid "Business Line"
 msgstr "Línea de negocio"
 
 #. module: backlog
-#: model:res.groups,name:backlog.group_business_owner
+#: model:res.groups,name:kvz_backlog.group_business_owner
 msgid "Business Owner"
 msgstr "Propietario del negocio"
 
@@ -259,7 +259,7 @@ msgid "Has Message"
 msgstr "Tiene mensaje"
 
 #. module: backlog
-#: model:res.groups,name:backlog.group_head_of_sales
+#: model:res.groups,name:kvz_backlog.group_head_of_sales
 msgid "Head of Sale"
 msgstr "Jefe de ventas"
 
@@ -373,7 +373,7 @@ msgid "Main Attachment"
 msgstr "Adjunto principal"
 
 #. module: backlog
-#: model:res.groups,name:backlog.group_backlog_manager
+#: model:res.groups,name:kvz_backlog.group_backlog_manager
 msgid "Manager"
 msgstr "Manager"
 
@@ -500,7 +500,7 @@ msgstr "Proyecto"
 
 #. module: backlog
 #: model:ir.model.fields,field_description:backlog.field_sale_order_line__project_manager
-#: model:res.groups,name:backlog.group_project_manager
+#: model:res.groups,name:kvz_backlog.group_project_manager
 msgid "Project Manager"
 msgstr "Project Manager"
 
@@ -710,7 +710,7 @@ msgid "Unread Messages Counter"
 msgstr "Contador de mensajes no leídos"
 
 #. module: backlog
-#: model:res.groups,name:backlog.group_backlog_users
+#: model:res.groups,name:kvz_backlog.group_backlog_users
 msgid "User"
 msgstr "Usuario"
 

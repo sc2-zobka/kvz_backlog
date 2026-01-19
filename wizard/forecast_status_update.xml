@@ -25,7 +25,7 @@
             <field name="view_id" ref="forecast_status_update_wiz_view" />
             <field name="context">{}</field>
             <field name="target">new</field>
-            <field name="groups_id" eval="[(4, ref('backlog.group_backlog_manager'))]" />
+            <field name="groups_id" eval="[(4, ref('kvz_backlog.group_backlog_manager'))]" />
             <field name="binding_model_id" ref="sale.model_sale_order_line" />
             <field name="binding_view_types">list</field>
         </record>

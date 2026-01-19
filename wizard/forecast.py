@@ -28,7 +28,7 @@ class ForecastWizard(models.TransientModel):
         vals = {}
         if activity_type_id:
             # send activity to backlog manager group
-            user_ids = self.env.ref("backlog.group_backlog_manager").users.ids
+            user_ids = self.env.ref("kvz_backlog.group_backlog_manager").users.ids
             user_id = user_ids[0] if user_ids else False
 
             vals = {
@@ -42,7 +42,7 @@ class ForecastWizard(models.TransientModel):
             }
         if button == "forecast":
             order_line.is_hide_forecast = True
-            backlog_state_id = self.env["backlog.stages"].search(
+            backlog_state_id = self.env["kvz_backlog.stages"].search(
                 [("stages_type", "=", "forecast")]
             )
             order_line.backlog_state_id = backlog_state_id.id
@@ -59,7 +59,7 @@ class ForecastWizard(models.TransientModel):
                 self.env["mail.activity"].create(vals)
 
         elif button == "send_invoicing":
-            backlog_state_id = self.env["backlog.stages"].search(
+            backlog_state_id = self.env["kvz_backlog.stages"].search(
                 [("stages_type", "=", "planning")]
             )
             order_line.backlog_state_id = backlog_state_id.id
@@ -74,7 +74,7 @@ class ForecastWizard(models.TransientModel):
                 self.env["mail.activity"].create(vals)
 
         elif button == "send_provisioning":
-            backlog_state_id = self.env["backlog.stages"].search(
+            backlog_state_id = self.env["kvz_backlog.stages"].search(
                 [("stages_type", "=", "planning")]
             )
             order_line.backlog_state_id = backlog_state_id.id

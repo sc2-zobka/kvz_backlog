@@ -50,7 +50,7 @@ class SaleOrde(models.Model):
 
     def action_confirm(self):
         res = super().action_confirm()
-        backlog_state_id = self.env["backlog.stages"].search(
+        backlog_state_id = self.env["kvz_backlog.stages"].search(
             [("stages_type", "=", "to_be_planned")]
         )
         for line in self.order_line:
